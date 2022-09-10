@@ -11,7 +11,6 @@ Else
 import random
 
 randomNum = random.randint(1,100)
-print(randomNum)
 userGuess = int(input("Guess a number between 1 and 100 (inclusive): "))
 if userGuess == randomNum:
     print("You guessed correctly!")

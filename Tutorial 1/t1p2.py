@@ -1,28 +1,18 @@
-'''
-Pseudocode: 
-Take the first score afrom the user and store it in a variable (scoreOne)
-Take the first weight afrom the user and store it in a variable (weightOne)
-Take the second score afrom the user and store it in a variable (scoreTwo)
-Take the second weight afrom the user and store it in a variable (weightTwo)
-Take the third score afrom the user and store it in a variable (scoreThree)
-Take the third weight afrom the user and store it in a variable (weightThree)
-Take the fourth score afrom the user and store it in a variable (scoreFour)
-Take the fourth weight afrom the user and store it in a variable (weightFour)
+# user input 3 midterms (20%)
+# user input 1 final (40%)
 
-Multiply the scores and their respective weights, then take the sum of those products and divide that sum by the sum of all the weights
-then store it in a variable (weightedAverage)
+grade1 = float(input("whats the grade for the first midterm?: "))
+weight1 = float(input("enter the weight for the first midterm (%): "))
 
-Output the weightedAverage
-'''
+grade2 = float(input("whats the grade for the second midterm?: "))
+weight2 = float(input("enter the weight for the second midterm (%): "))
 
-scoreOne = float(input("What is your first score: "))
-weightOne = float(input("What is the weight of your first item: "))
-scoreTwo = float(input("What is your second score: "))
-weightTwo = float(input("What is the weight of your second item: "))
-scoreThree = float(input("What is your third score: "))
-weightThree = float(input("What is the weight of your third item: "))
-scoreFour = float(input("What is your four score: "))
-weightFour = float(input("What is the weight of your four item: "))
+grade3 = float(input("whats the grade for the third midterm?: "))
+weight3 = float(input("enter the weight for the third midterm (%): "))
 
-weightedAverage = ( (scoreOne * weightOne) + (scoreTwo * weightTwo) + (scoreThree * weightThree) + (scoreFour * weightFour) )/ (weightOne + weightTwo + weightThree+ weightFour)
-print("Your weighted average is",weightedAverage)
+grade4 = float(input("whats the grade for the final?: "))
+weight4 = float(input("enter the weight for the final (%): "))
+
+average = (grade1*(weight1/100))+(grade2*(weight2/100))+(grade3*(weight3/100))+(grade4*(weight4/100))
+
+print(average)
