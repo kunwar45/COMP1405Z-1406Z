@@ -1,0 +1,102 @@
+Pseudocode:
+
+Single round game:
+
+Loop first round in case of draw:
+    Take input from Player One about their choice in Rock, Paper, Scissors and store it in a variable (p1Choice)
+    Take input from Player Two about their choice in Rock, Paper, Scissors and store it in a variable (p2Choice)
+
+    If Player One chose rock AND Player Two chose paper:
+        Output Player Two Wins
+    Else if Player One chose rock AND Player Two chose scissors:
+        Output Player One Wins
+    Else if Player One chose paper AND Player Two chose scissors
+        Output Player Two Wins
+    Else if Player One chose paper AND Player Two chose rock:
+        Output Player One Wins
+    Else if Player One Chose scissors AND Player Two chose rock:
+        Output Player Two Wins
+    Else if Player One Chose scissors AND Player Two chose paper:
+        Output Player One Wins
+    Else:
+        Output Draw
+        restart round loop
+    Break the round loop (this will occur if there is no draw)
+
+Best 4 out of 7 game:
+
+Create variable for Player One round wins (p1Wins) and set it to 0
+Create variable for Player Two round wins (p2Wins) and set it to 0
+Create variable for the round number (roundNum) and set it to 0
+
+
+Loop rounds while Player One has less than 4 wins AND while Player Two has less than 4 wins:
+    Increment roundNum
+
+    Loop round infinitely in case of draw:
+        Take input from Player One about their choice in Rock, Paper, Scissors and store it in a variable (p1Choice)
+        Take input from Player Two about their choice in Rock, Paper, Scissors and store it in a variable (p2Choice)
+        
+        If Player One chose rock AND Player Two chose paper:
+            Output Player Two Wins round <roundNum>
+            Increment p2Wins
+        Else if Player One chose rock AND Player Two chose scissors:
+            Output Player One Wins round <roundNum>
+            Increment p1Wins
+        Else if Player One chose paper AND Player Two chose scissors
+            Output Player Two Wins round <roundNum>
+            Increment p1Wins
+        Else if Player One chose paper AND Player Two chose rock:
+            Output Player One Wins round <roundNum>
+            Increment p1Wins
+        Else if Player One Chose scissors AND Player Two chose rock:
+            Output Player Two Wins round <roundNum>
+            Increment p1Wins
+        Else if Player One Chose scissors AND Player Two chose paper:
+            Output Player One Wins round <roundNum>
+            Increment p1Wins
+        Else:
+            Output Draw
+            restart round loop
+        Break the round loop
+If p1Wins is 4:
+    Output Player 1 wins
+Else:
+    Output Player 2 wins
+
+Code I used to check
+
+roundNum, p1Wins, p2Wins = 0,0,0
+
+while(p1Wins < 4 and p2Wins < 4):
+    roundNum+=1
+    print("This is round",roundNum)
+
+    while(True):
+        p1Choice = str(input("p1: "))
+        p2Choice = str(input("p2: "))
+
+        if p1Choice == "rock" and p2Choice == "paper":
+            print("Player 2 wins round",roundNum)
+            p2Wins+=1
+        elif p1Choice == "rock" and p2Choice == "scissors":
+            print("Player 1 wins round",roundNum)
+            p1Wins+=1
+        elif p1Choice == "paper" and p2Choice == "scissors":
+            print("Player 2 wins round",roundNum)
+            p2Wins+=1
+        elif p1Choice == "paper" and p2Choice == "rock":
+            print("Player 1 wins round",roundNum)
+            p1Wins+=1
+        elif p1Choice == "scissors" and p2Choice == "rock":
+            print("Player 2 wins round",roundNum)
+            p2Wins+=1
+        elif p1Choice == "scissors" and p2Choice == "paper":
+            print("Player 1 wins round",roundNum)
+            p1Wins+=1
+        else:
+            print("Draw")
+            continue
+        break
+
+print("Player 1 wins") if p1Wins == 4 else print("Player 2 wins")
