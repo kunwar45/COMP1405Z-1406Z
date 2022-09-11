@@ -15,4 +15,4 @@ weight4 = float(input("enter the weight for the final (%): "))
 
 average = (grade1*(weight1/100))+(grade2*(weight2/100))+(grade3*(weight3/100))+(grade4*(weight4/100))
 
-print(average)
+print("Your weighted average is",average)
