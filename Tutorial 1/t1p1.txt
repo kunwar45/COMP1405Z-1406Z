@@ -43,7 +43,7 @@ Loop rounds while Player One has less than 4 wins AND while Player Two has less 
         Else if Player One chose rock AND Player Two chose scissors:
             Output Player One Wins round <roundNum>
             Increment p1Wins
-        Else if Player One chose paper AND Player Two chose scissors
+        Else if Player One chose paper AND Player Two chose scissors:
             Output Player Two Wins round <roundNum>
             Increment p1Wins
         Else if Player One chose paper AND Player Two chose rock:
@@ -64,39 +64,3 @@ If p1Wins is 4:
 Else:
     Output Player 2 wins
 
-Code I used to check
-
-roundNum, p1Wins, p2Wins = 0,0,0
-
-while(p1Wins < 4 and p2Wins < 4):
-    roundNum+=1
-    print("This is round",roundNum)
-
-    while(True):
-        p1Choice = str(input("p1: "))
-        p2Choice = str(input("p2: "))
-
-        if p1Choice == "rock" and p2Choice == "paper":
-            print("Player 2 wins round",roundNum)
-            p2Wins+=1
-        elif p1Choice == "rock" and p2Choice == "scissors":
-            print("Player 1 wins round",roundNum)
-            p1Wins+=1
-        elif p1Choice == "paper" and p2Choice == "scissors":
-            print("Player 2 wins round",roundNum)
-            p2Wins+=1
-        elif p1Choice == "paper" and p2Choice == "rock":
-            print("Player 1 wins round",roundNum)
-            p1Wins+=1
-        elif p1Choice == "scissors" and p2Choice == "rock":
-            print("Player 2 wins round",roundNum)
-            p2Wins+=1
-        elif p1Choice == "scissors" and p2Choice == "paper":
-            print("Player 1 wins round",roundNum)
-            p1Wins+=1
-        else:
-            print("Draw")
-            continue
-        break
-
-print("Player 1 wins") if p1Wins == 4 else print("Player 2 wins")
