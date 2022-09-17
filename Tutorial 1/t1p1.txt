@@ -2,7 +2,7 @@ Pseudocode:
 
 Single round game:
 
-Loop first round in case of draw:
+Loop first round perpetually (in case of draw):
     Take input from Player One about their choice in Rock, Paper, Scissors and store it in a variable (p1Choice)
     Take input from Player Two about their choice in Rock, Paper, Scissors and store it in a variable (p2Choice)
 
@@ -29,11 +29,10 @@ Create variable for Player One round wins (p1Wins) and set it to 0
 Create variable for Player Two round wins (p2Wins) and set it to 0
 Create variable for the round number (roundNum) and set it to 0
 
-
 Loop rounds while Player One has less than 4 wins AND while Player Two has less than 4 wins:
     Increment roundNum
 
-    Loop round infinitely in case of draw:
+    Loop round infinitely (in case of draw):
         Take input from Player One about their choice in Rock, Paper, Scissors and store it in a variable (p1Choice)
         Take input from Player Two about their choice in Rock, Paper, Scissors and store it in a variable (p2Choice)
         

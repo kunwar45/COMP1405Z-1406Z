@@ -1,5 +1,5 @@
-# user input 3 midterms (20%)
-# user input 1 final (40%)
+# user input 3 midterms
+# user input 1 final
 
 grade1 = float(input("whats the grade for the first midterm?: "))
 weight1 = float(input("enter the weight for the first midterm (%): "))
