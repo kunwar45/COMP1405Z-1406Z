@@ -39,10 +39,10 @@ def get_total_customer_purchases(filename, customer):
 
     for line in fhand:
         lineCount+=1
-        if line[:len(line)-1] == customer:
+        if line.strip() == customer:
             customerLineCount = lineCount
         if customerLineCount == lineCount-5:
-                    totalPurchases+=int(line)
+            totalPurchases+=int(line)
     return totalPurchases
 
 def get_average_customer_purchases(filename, customer):
@@ -50,22 +50,19 @@ def get_average_customer_purchases(filename, customer):
         return 0
     return get_total_customer_purchases(filename, customer)/get_number_customer_purchases(filename, customer)
 
-#Every 6 lines, reset lineCount to 0 so that I can go to the next purchase and find all the individual sales
+#Go through the 6 repeated lines of every purchase to find the most popular product
 def get_most_popular_product(filename):
     fhand = open(filename)
-    desktopsSold, laptopsSold, tabletsSold, toastersSold, lineCount = 0,0,0,0,0
-    for line in fhand:
-        lineCount+=1
-        if lineCount == 2:
-            desktopsSold+=float(line)
-        elif lineCount == 3:
-            laptopsSold+=float(line)
-        elif lineCount == 4:
-            tabletsSold+=float(line)
-        elif lineCount == 5:
-            toastersSold+=float(line)
-        elif lineCount == 6:
-            lineCount = 0
+    desktopsSold, laptopsSold, tabletsSold, toastersSold = 0,0,0,0
+    line = fhand.readline().strip()
+    while(line != ""):
+        desktopsSold += float(fhand.readline().strip())
+        laptopsSold+=float(fhand.readline().strip())
+        tabletsSold+=float(fhand.readline().strip())
+        toastersSold+=float(fhand.readline().strip())
+        fhand.readline().strip() #Get rid of this unneeded line
+        line = fhand.readline().strip()
+    
     maxCount = max(desktopsSold,laptopsSold,tabletsSold,toastersSold)
     if desktopsSold == maxCount:
         return "Desktop"
