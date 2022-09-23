@@ -1,9 +1,10 @@
 searchWord = str(input("Enter a word to search for: "))
 pageCounts = [] #List to hold the searchWordCounts for each of the pages
 pageRatios = [] #List to hold the ratios of the searchWordCounts to the totalWordCounts for each of the pages
-for page in range(0,6):
+pages = open("pages.txt") 
+for page in pages:
     searchWordCount, totalWordCount = 0,0
-    fhand = open(f"N-{page}.txt") #Fstring, puts a variable in a string (in this case, the page number)
+    fhand = open(f"{page.strip()}") #Fstring, puts a variable in a string (in this case, the page number)
     for line in fhand:
         totalWordCount+=1
         if searchWord in line:
