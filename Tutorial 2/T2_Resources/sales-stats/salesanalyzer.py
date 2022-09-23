@@ -25,7 +25,7 @@ def get_number_customer_purchases(filename, customer):
     fhand = open(filename)
     customerPurchaseCount = 0
     for line in fhand:
-        if line[:len(line)-1] == customer:
+        if line.strip() == customer:
             customerPurchaseCount+=1
     return customerPurchaseCount
 

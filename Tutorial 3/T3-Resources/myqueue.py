@@ -1,8 +1,8 @@
-maxQueue = 10
+maxLength = 10
 
-#Adds one item parameter to the queue (list) given if it's less than the maxQueue
+#Adds one item parameter to the queue (list) given if it's less than the maxLength
 def enqueue(queue, value):
-    if(len(queue)<maxQueue):
+    if(len(queue)<maxLength):
         queue.append(value)
         return True
     return False
@@ -24,7 +24,7 @@ def isempty(queue):
         return False
     return True
 
-#Queue multiple items in the queue until t
+#Queue multiple items in the queue until it hits the maxLength
 def multienqueue(queue, items):
     count = 0
     for item in items:
@@ -32,6 +32,7 @@ def multienqueue(queue, items):
             count+=1
     return count
 
+#Dequeue a number of items from the queue unless it's empty
 def multidequeue(queue,number):
     dequeued = []
     for num in range(0,number):
@@ -40,3 +41,7 @@ def multidequeue(queue,number):
         else:
             break
     return dequeued
+
+#Using this for problem 3
+def changeMaxLength(newMax):
+    maxLength = newMax
