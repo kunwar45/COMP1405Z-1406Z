@@ -1,0 +1,23 @@
+Enter a word to search for: apple
+Max Page (Count): N-4.txt
+Max Count: 22
+Max Page (Ratio): N-1.txt
+Max Ratio: 0.27586206896551724
+
+Enter a word to search for: pear
+Max Page (Count): N-4.txt
+Max Count: 19
+Max Page (Ratio): N-3.txt
+Max Ratio: 0.2916666666666667
+
+Enter a word to search for: banana
+Max Page (Count): N-0.txt
+Max Count: 16
+Max Page (Ratio): N-0.txt
+Max Ratio: 0.22857142857142856
+
+Enter a word to search for: peach
+Max Page (Count): N-4.txt
+Max Count: 14
+Max Page (Ratio): N-1.txt
+Max Ratio: 0.3448275862068966
