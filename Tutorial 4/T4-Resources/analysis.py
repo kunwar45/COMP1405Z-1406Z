@@ -33,7 +33,7 @@ def commonpair(string):
     if string not in wordCounts or (wordCounts[string]==1 and wordlist[len(wordlist)-1] == string):
         return None
 
-    for word in range(len(wordlist)-2):
+    for word in range(len(wordlist)-1):
         if wordlist[word] == string:
             if wordlist[word+1] in commonpairs:
                 commonpairs[wordlist[word+1]]+=1
