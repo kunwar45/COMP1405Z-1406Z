@@ -18,4 +18,4 @@ def isvalid(str):
             else:
                 return False
         
-    return mystack.isEmpty(stack)
+    return mystack.isempty(stack)

@@ -41,7 +41,3 @@ def multidequeue(queue,number):
         else:
             break
     return dequeued
-
-#Using this for problem 3
-def changeMaxLength(newMax):
-    maxLength = newMax
