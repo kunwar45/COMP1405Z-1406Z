@@ -1,7 +1,3 @@
-from operator import truediv
-from xml.dom.minidom import Element
-
-
 maxSize = 10
 
 def enqueue(queue, value):
