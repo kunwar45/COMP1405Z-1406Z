@@ -14,5 +14,3 @@ def isPrime(N):
         if N%i == 0:
             return False
     return True
-
-print(largest_prime_factor(1))
