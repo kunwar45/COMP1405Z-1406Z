@@ -53,6 +53,4 @@ def extract(string,substring):
                 break
     return string
 
-print_sorted_grades("studentinfo2.txt")
-
-# print(remove("Cool","ool"))
+print_sorted_grades("studentinfo1.txt")
