@@ -1,10 +1,18 @@
-from math import sqrt
+import math
 
 def mult_scalar(matrix, scale):
-	for row in range(len(matrix)):
-		for element in range(len(matrix[row])):
-			matrix[row][element] = matrix[row][element] * scale
-	return matrix
+	resultMatrix = []
+
+	for i in range(len(matrix)):
+		row = []
+		for j in range(len(matrix[0])):
+			row.append(0)
+		resultMatrix.append(row)
+
+	for i in range(len(matrix)):
+		for j in range(len(matrix[i])):
+			resultMatrix[i][j] = matrix[i][j] * scale
+	return resultMatrix
 
 def mult_matrix(a, b):
 	if (len(a) != len(b[0])) and (len(b) != len(a[0])): #if the number of rows in a does not equal the number of columns in b 
@@ -21,7 +29,8 @@ def mult_matrix(a, b):
 	return newMatrix
 	
 def euclidean_dist(a,b):
-	if len(a[0]) != len(b[0]) or len(a) !=1 or len(b) !=1:
-		return None 
-	#list comprehension, sums up all the squared differences and square roots the sum
-	return sqrt(sum([(a[0][i]-b[0][i])**2 for i in range(len(a[0]))])) 
+	sum = 0
+
+	for i in range (len(a[0])):
+		sum += ((a[0][i] - b[0][i]) ** 2)
+	return math.sqrt(sum)
