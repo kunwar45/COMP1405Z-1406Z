@@ -14,7 +14,7 @@ def crawl(seed):
         urlDict[url] = parse(relativeLink + url)
 
     """
-    This code gets every URl in the tree. Now I am thinking to make a function which essentially returns in the list without duplicates
+    This code gets every URl in the in the seed file. Now my thought process was to make a function which essentially returns in the list without duplicates
     This might not be the best way but its where my mind went so lemme know if there is a better way to do this. Like for example, checking if duplicate already exists before appending etc.
     """
     urlsWithoutDuplicates = removeDuplicates(urlDict)
