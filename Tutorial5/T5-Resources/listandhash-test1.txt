@@ -1,0 +1,13 @@
+import random
+list = []
+hash = {}
+for i in range(25):
+	if random.randint(0,100) < 75:
+		num = random.randint(0,10)
+		print("Adding", num)
+		addend(list,hash,num)
+	else:
+		num = removestart(list,hash)
+		print("Removed", num)
+	print(list)
+	print(hash)
