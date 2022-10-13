@@ -2,7 +2,7 @@ import math
 def count(list, value):
     if (startVal:= findstart(list,value))!=-1: #using walrus operator to not call findstart again in the return statement
         return (findend(list,value) - startVal + 1)
-    return -1
+    return 0
 
 def findstart(list,value):
     start,end = 0,len(list)-1
@@ -32,30 +32,35 @@ import random
 import time
 repeat = 50000
 maxval = 500
-searchlist = []
+searchlistX = []
+searchlistY = []
+
+for i in range(int(repeat/20)):
+	searchlistX.append(random.randint(0,maxval))
 
 for i in range(repeat):		
-	searchlist.append(random.randint(0,maxval))
-	
-	searchnum = random.randint(0,maxval)
-searchlist.sort()
+	searchlistY.append(random.randint(0,1*maxval))
 
-print("Checking if equal")
-if searchlist.count(searchnum) != count(searchlist, searchnum):
-    
-    print(searchlist.count(searchnum), count(searchlist, searchnum))
-    exit()
-else:
-    print("Equal")
+searchlistX.sort()
+searchlistY.sort()
+
+for i in searchlistY:
+    if (linearBool:=searchlistX.count(i)) != (hashBool:=count(searchlistX,i)):
+        print(hashBool);exit()
 
 start = time.time()
-for i in searchlist:
-	searchlist.count(i)
+for i in searchlistY:
+	searchlistX.count(i)
 end = time.time()
-print("Linear time: ", (end-start))
+print("Linear time: ", (lintime:=end-start))
 
 start = time.time()
-for i in searchlist:
-	count(searchlist,i)
+for i in searchlistY:
+	count(searchlistX,i)
 end = time.time()
-print("binary search ", (end-start))
+print("binary search ", (bintime:=end-start))
+print("Linear search is", round(lintime/bintime), "times slower than binary search")
+
+#The larger the range is, the slower linear search is compared to binary search
+#When there's a larger proportion of numbers that don't exist in X, linear search is even more slow compared to binary search
+#The larger the size of Y and X, the slower linear search is compared to binary search
