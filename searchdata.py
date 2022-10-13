@@ -1,4 +1,5 @@
 from matmult import euclidean_dist, mult_scalar
+from math import log
 ALPHA = 0.1
 DISTANCE_THRESHOLD = 0.0001
 
@@ -22,12 +23,12 @@ def get_page_rank(URL):
             else:
                 matrix[i].append(1/len(ogIndexes) if int(j) in ogIndexes else 0)
     
-    matrix = mult_scalar(matrix, 0.5) #Multiply matrix by 1-alpha
+    matrix = mult_scalar(matrix, ALPHA) #Multiply matrix by 1-alpha
 
     # Add alpha/N to each of the elements in the matrix
     for i in range(len(matrix)):
         for j in range(len(matrix)):
-            matrix[i][j]+= (0.5/len(dictionary))
+            matrix[i][j]+= (ALPHA/len(dictionary))
     
     print(matrix)
 
@@ -36,6 +37,7 @@ def get_page_rank(URL):
         pi.append(0)
     euclid_dist = 1
     
+    #Finding Stable State
     while(euclid_dist>=DISTANCE_THRESHOLD):
         new_pi = []
         for i in range (len(matrix)):
@@ -48,19 +50,18 @@ def get_page_rank(URL):
     return pageRank
 
 def get_idf(word):
-    # counter = 0
-    # for url in dictionary:
-    #     if word in url[countAll]:
-    #         counter +=1
-    #idf = math.log( len(dictionary)/(1 + counter), 2)
-    return 0
+    counter = 0
+    for url in dictionary:
+        if word in dictionary[url]["countAll"]:
+            counter +=1
+    idf = log( len(dictionary)/(1 + counter), 2)
+    return idf
 
 def get_tf(URL, word):
-    # return dictionary[URL][countAll][word]/(dictionary[URL])[wordCount]
-    return 0
+    return dictionary[URL]["countAll"][word]/(dictionary[URL])["wordCount"]
 
 def get_tf_idf(URL, word):
-    #tfidf = math.log( 1+ get_tf(URL,word) , 2)* get_idf(word)
+    tfidf = log(1+ get_tf(URL,word), 2)* get_idf(word)
     tfidf = 0 
     return tfidf
 
