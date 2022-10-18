@@ -6,6 +6,7 @@ relativeLink = 'http://people.scs.carleton.ca/~davidmckenney/fruits/'
 
 def crawl(seed):
     global urlDict
+    parse
 
     # Most likely we should store this differently, perhaps a nested dictionary
     urlDict[seed.strip(relativeLink)] = parse(seed)
@@ -24,7 +25,6 @@ def crawl(seed):
 # Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
 def parse(url):
     urlList = []
-
     for index in webdev.read_url(url).split():
         if "href" in index:
             """
@@ -34,6 +34,9 @@ def parse(url):
             Lemme know if you think of a better way.
             """
             urlList.append(createSubString(index, '/', '>').strip('"'))
+            # urlList.append(index)
+        elif "<" not in index:
+
     return urlList
 
 # Returns non inclusive substring from in between two characters of a string
@@ -49,4 +52,32 @@ def removeDuplicates(dict):
                 newList.append(item)
     return newList
 
-print(crawl('http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html'))
+print(crawl('http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html'), urlDict)
+print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html"))
+
+'''
+Pseudocode:
+
+
+
+crawl(seed)
+    create improvedqueue of urls (empty)
+    loop:
+        Take url and parse it
+        for each url in dict[url][outgoinglinks]:
+            Add it to improvedqueue if it isn't are already in the queue #should be o(1) because we're using improvedqueue
+
+
+
+
+parse(url)
+    Search through url
+        if it is a word
+            increment dict[url][countAll][<word>] if it isn't there already
+            increment dict[url][wordCount]
+            find tf of the word and add it to dict[url][wordVectors][<word>][0]
+        if it is a link
+            add it to dict[url][outgoinglinks]
+            add url to dict[link][incominglinks]
+
+'''
