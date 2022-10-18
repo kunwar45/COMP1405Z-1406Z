@@ -36,6 +36,7 @@ def parse(url):
             urlList.append(createSubString(index, '/', '>').strip('"'))
             # urlList.append(index)
         elif "<" not in index:
+            urlList.append(createSubString(index, '/', '>').strip('"'))
 
     return urlList
 
