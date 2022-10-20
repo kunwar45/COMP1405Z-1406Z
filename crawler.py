@@ -1,65 +1,10 @@
 import webdev
-
-urlDict = {}
-# I don't know if relativeLink should be defined as a hardcoded variable, lemme know if you think of a better way
-relativeLink = 'http://people.scs.carleton.ca/~davidmckenney/fruits/'
-
-def crawl(seed):
-    global urlDict
-    parse
-
-    # Most likely we should store this differently, perhaps a nested dictionary
-    urlDict[seed.strip(relativeLink)] = parse(seed)
-
-    for url in urlDict[seed.strip(relativeLink)]:
-        urlDict[url] = parse(relativeLink + url)
-
-    """
-    This code gets every URl in the in the seed file. Now my thought process was to make a function which essentially returns in the list without duplicates
-    This might not be the best way but its where my mind went so lemme know if there is a better way to do this. Like for example, checking if duplicate already exists before appending etc.
-    """
-    urlsWithoutDuplicates = removeDuplicates(urlDict)
-
-    return len(urlsWithoutDuplicates)
-
-# Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
-def parse(url):
-    urlList = []
-    for index in webdev.read_url(url).split():
-        if "href" in index:
-            """
-            Here I tried the line:
-            urlList.append(createSubString(index, '"', '"')
-            But it was returning empty strings so I had to take the characters before and after the double quotes, respectively and then strip the double quotes.
-            Lemme know if you think of a better way.
-            """
-            urlList.append(createSubString(index, '/', '>').strip('"'))
-            # urlList.append(index)
-        elif "<" not in index:
-            urlList.append(createSubString(index, '/', '>').strip('"'))
-
-    return urlList
-
-# Returns non inclusive substring from in between two characters of a string
-def createSubString(str, start, end):
-    return str[(str.index(start)+1):str.index(end)]
-
-# Remove the duplicates, this is not the cleanest way of doing this I suppose
-def removeDuplicates(dict):
-    newList = []
-    for urlList in dict.values():
-        for item in urlList:
-            if item not in newList:
-                newList.append(item)
-    return newList
-
-print(crawl('http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html'), urlDict)
-print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html"))
+import improvedqueue
+import json
+newDict = {}
 
 '''
 Pseudocode:
-
-
 
 crawl(seed)
     create improvedqueue of urls (empty)
@@ -67,9 +12,6 @@ crawl(seed)
         Take url and parse it
         for each url in dict[url][outgoinglinks]:
             Add it to improvedqueue if it isn't are already in the queue #should be o(1) because we're using improvedqueue
-
-
-
 
 parse(url)
     Search through url
@@ -80,5 +22,78 @@ parse(url)
         if it is a link
             add it to dict[url][outgoinglinks]
             add url to dict[link][incominglinks]
-
 '''
+
+def crawl(seed):
+    global newDict
+    queueDict,queueList = {seed:1},[seed]
+    
+    url = improvedqueue.removestart(queueList,queueDict)
+    count = 1
+
+    while True: #Keeps crawling until there are no more links to take
+        parse(url)
+        
+        for outgoingLink in newDict[url]["outgoinglinks"]:
+            if not improvedqueue.containshash(queueDict,outgoingLink) and "outgoinglinks" not in newDict[outgoingLink]:
+                improvedqueue.addend(queueList,queueDict,outgoingLink)
+        if len(queueList) == 0:
+            break
+        url = improvedqueue.removestart(queueList,queueDict)
+        count+=1
+
+    with open('output.json', 'w+') as file:
+        json.dump(newDict, file)
+    # print(newDict)
+    return count
+
+# Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
+def parse(url):
+    global newDict
+    
+    if url not in newDict:
+        newDict[url] = {}
+    if "incominglinks" not in newDict[url]:
+        newDict[url]["incominglinks"] = []
+    newDict[url]["outgoinglinks"] = []
+    newDict[url]["countAll"] = {}
+    newDict[url]["wordCount"] = 0
+    newDict[url]["wordVectors"] = []
+
+    parsed = webdev.read_url(url)
+    if parsed == "":
+        return -1
+    for index in parsed.split():
+        if "href" in index:
+
+            lastSlash = len(url) - url[::-1].find('/')
+            outgoingLink = url[:lastSlash] + createSubString(index, '/', '>').strip('"')
+            newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
+            # add the current url to the outgoing link's incoming links
+            
+            if outgoingLink in newDict:
+                if "incominglinks" in newDict[outgoingLink]:
+                    newDict[outgoingLink]["incominglinks"].append(url)
+            else:
+                newDict[outgoingLink]= {}
+                newDict[outgoingLink]["incominglinks"] = [] 
+                newDict[outgoingLink]["incominglinks"].append(url)
+            
+        elif "<" not in index:
+            newDict[url]["wordCount"]+=1
+
+            if index in newDict[url]["countAll"]:
+                newDict[url]["countAll"][index] += 1
+            else:
+                newDict[url]["countAll"][index] = 1
+
+    return 0
+
+# Returns non inclusive substring from in between two characters of a string
+def createSubString(str, start, end):
+    return str[(str.index(start)+1):str.index(end)]
+
+print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+# print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
+
+# <a > " "
