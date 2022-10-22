@@ -1,7 +1,12 @@
 import webdev
 import improvedqueue
 import json
-newDict = {}
+from matmult import euclidean_dist, mult_scalar
+
+newDict,mapping = {},[]
+ALPHA = 0.1
+DISTANCE_THRESHOLD = 0.0001
+
 
 '''
 Pseudocode:
@@ -26,6 +31,7 @@ parse(url)
 
 def crawl(seed):
     global newDict
+    global mapping
     queueDict,queueList = {seed:1},[seed]
     
     url = improvedqueue.removestart(queueList,queueDict)
@@ -42,6 +48,10 @@ def crawl(seed):
         url = improvedqueue.removestart(queueList,queueDict)
         count+=1
 
+    pageRanks = createPageRanks()
+    for rank in range(len(pageRanks)):
+        newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
+    
     with open('output.json', 'w+') as file:
         json.dump(newDict, file)
     # print(newDict)
@@ -59,6 +69,7 @@ def parse(url):
     newDict[url]["countAll"] = {}
     newDict[url]["wordCount"] = 0
     newDict[url]["wordVectors"] = []
+    newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
     if parsed == "":
@@ -93,7 +104,63 @@ def parse(url):
 def createSubString(str, start, end):
     return str[(str.index(start)+1):str.index(end)]
 
-print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+def createPageRanks():
+    global newDict
+    global mapping
+    # print("Mapping from matrix index to URL:")
+
+    for url in newDict:
+        mapping.append(url)
+        # print(str(mapping.index(url)) + " -> " + url)
+    
+    matrix = []
+
+    length = len(mapping)
+    for i in range(length):
+        matrix.append([])
+        for j in range(length):
+            # print(len(newDict[mapping[i]]["outgoinglinks"]))
+            if len(ogIndexes:=newDict[mapping[i]]["outgoinglinks"]) == 0:
+                matrix[i].append(1/length)
+            else:
+                matrix[i].append(1/len(ogIndexes) if mapping[j] in ogIndexes else 0)
+    
+    # print("Adjacency matrix \n",matrix)
+    
+    matrix = mult_scalar(matrix, 1-ALPHA) #Multiply matrix by 1-alpha
+
+    # print("Scaled Adjacency matrix \n",matrix)
+
+    # Add alpha/N to each of the elements in the matrix
+    for i in range(length):
+        for j in range(length):
+            matrix[i][j]+= (ALPHA/length)
+    
+    # print("Adjacency Matrix after adding alpha/N to each entry \n\n",matrix)
+
+    pi = []
+    for i in range(length):
+        pi.append(1/length)
+    euclid_dist = 1
+    
+    #Finding Stable State
+    # print ("Creating Pi")
+    count = 0
+    while(euclid_dist>=DISTANCE_THRESHOLD):
+        count+=1
+        new_pi = []
+        for i in range (length):
+            new_pi.append(dotProduct(pi, [x[i] for x in matrix]))
+        euclid_dist = euclidean_dist([pi],[new_pi])
+        pi = new_pi
+    return pi
+
+def dotProduct(pi,b):
+    sum = 0
+    for i in range(len(pi)):
+        sum+=pi[i]*b[i]
+    return sum
+
+# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 
-# <a > " "
