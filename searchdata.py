@@ -1,88 +1,41 @@
 from math import log
 import json
-
-
-#Create mapping
-file = open("mapping.txt","r")
-mapping = file.readlines()[0].split()
-file.close()
-
+import os
 
 def grabNewDict():
     with open('output.json') as output:
         return json.load(output)
 
+def readFile(path):
+    file = open(path,"r")
+    content = file.readlines()
+    file.close()
+    return content
 
-newDict = {0:{ "outgoinglinks": [1], "incominglinks": [0,1], "countAll": {"word": 0}, "wordCount": 0, "wordVectors":{"word": 0}}, 
-               1:{ "outgoinglinks": [0,2], "incominglinks": [0,1], "countAll": {"word": 0}, "wordCount": 0, "wordVectors":{"word": 0}},
-              2:{ "outgoinglinks": [1], "incominglinks": [0,1], "countAll": {"word": 0}, "wordCount": 0, "wordVectors":{"word": 0}},}
+#Make getting to the correct URL folder O(1)
+reversedMap = readFile("mapping.txt")[0].split()
+mapping = {}
+for urlNum in range(len(reversedMap)):
+    mapping[reversedMap[urlNum]] = urlNum
 
 def get_outgoing_links(URL):
-    newDict = grabNewDict()
-    if newDict !=None and URL!=None and URL in newDict:
-        return newDict[URL]["outgoinglinks"]
+    # newDict = grabNewDict()
+    if URL in reversedMap:
+        return readFile(os.path.join("pages",str(mapping[URL]),"outgoinglinks.txt"))[0].split()
     return None
     
 
 def get_incoming_links(URL):
-    newDict = grabNewDict()
-    if URL in newDict:
-        return newDict[URL]["incominglinks"]
+    # newDict = grabNewDict()
+    if URL in reversedMap:
+        return readFile(os.path.join("pages",str(mapping[URL]),"incominglinks.txt"))[0].split()
     return None
 
 def get_page_rank(URL):
-    newDict = grabNewDict()
-    if URL in newDict:
-        return newDict[URL]["pageRank"]
+    # newDict = grabNewDict()
+    if URL in reversedMap:
+        return float(readFile(os.path.join("pages",str(mapping[URL]),"pageRank.txt"))[0])
     return -1
-    # print("Mapping from matrix index to URL:")
-    # mapping = []
-    # for url in newDict:
-    #     mapping.append(url)
-    #     print(str(mapping.index(url)) + " -> " + url)
-    
-    # matrix = []
-    # length = len(mapping)
-    # for i in range(length):
-    #     matrix.append([])
-    #     for j in range(length):
-    #         # print(len(newDict[mapping[i]]["outgoinglinks"]))
-    #         if len(ogIndexes:=newDict[mapping[i]]["outgoinglinks"]) == 0:
-    #             matrix[i].append(1/length)
-    #         else:
-    #             matrix[i].append(1/len(ogIndexes) if mapping[j] in ogIndexes else 0)
-    
-    # print("Adjacency matrix \n",matrix)
-    
-    # matrix = mult_scalar(matrix, 1-ALPHA) #Multiply matrix by 1-alpha
-
-    # print("Scaled Adjacency matrix \n",matrix)
-
-    # # Add alpha/N to each of the elements in the matrix
-    # for i in range(length):
-    #     for j in range(length):
-    #         matrix[i][j]+= (ALPHA/length)
-    
-    # print("Adjacency Matrix after adding alpha/N to each entry \n\n",matrix)
-
-    # pi = [1]
-    # for i in range(length-1):
-    #     pi.append(0)
-    # euclid_dist = 1
-    
-    # #Finding Stable State
-    # print ("")
-    # count = 0
-    # while(euclid_dist>=DISTANCE_THRESHOLD):
-    #     count+=1
-    #     new_pi = []
-    #     for i in range (length):
-    #         new_pi.append(dotProduct(pi, [x[i] for x in matrix]))
-    #     euclid_dist = euclidean_dist([pi],[new_pi])
-    #     pi = new_pi
-    #     # print(pi,euclid_dist, count)
-    #     print(count)
-    # return pi
 
 def get_idf(word):
     newDict = grabNewDict()
@@ -115,4 +68,4 @@ def dotProduct(pi,b):
         sum+=pi[i]*b[i]
     return sum
 
-# get_page_rank('1')
+# print(get_outgoing_links('http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html'))
