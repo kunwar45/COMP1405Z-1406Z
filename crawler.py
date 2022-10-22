@@ -1,9 +1,10 @@
 import webdev
 import improvedqueue
 import json
+import os
 from matmult import euclidean_dist, mult_scalar
 
-newDict,mapping = {},[]
+mapping = []
 ALPHA = 0.1
 DISTANCE_THRESHOLD = 0.0001
 
@@ -30,37 +31,37 @@ parse(url)
 '''
 
 def crawl(seed):
-    global newDict
+    newDict = {}
     global mapping
     queueDict,queueList = {seed:1},[seed]
     
     url = improvedqueue.removestart(queueList,queueDict)
+    # os.makedirs("0")
     count = 1
 
     while True: #Keeps crawling until there are no more links to take
-        parse(url)
+        newDict = parse(url,newDict)
         
         for outgoingLink in newDict[url]["outgoinglinks"]:
             if not improvedqueue.containshash(queueDict,outgoingLink) and "outgoinglinks" not in newDict[outgoingLink]:
                 improvedqueue.addend(queueList,queueDict,outgoingLink)
+                
         if len(queueList) == 0:
             break
         url = improvedqueue.removestart(queueList,queueDict)
         count+=1
 
-    pageRanks = createPageRanks()
+    pageRanks = createPageRanks(newDict)
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
-    
+    print(mapping)
     with open('output.json', 'w+') as file:
         json.dump(newDict, file)
     # print(newDict)
     return count
 
 # Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
-def parse(url):
-    global newDict
-    
+def parse(url, newDict):
     if url not in newDict:
         newDict[url] = {}
     if "incominglinks" not in newDict[url]:
@@ -97,15 +98,13 @@ def parse(url):
                 newDict[url]["countAll"][index] += 1
             else:
                 newDict[url]["countAll"][index] = 1
-
-    return 0
+    return newDict
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
     return str[(str.index(start)+1):str.index(end)]
 
-def createPageRanks():
-    global newDict
+def createPageRanks(newDict):
     global mapping
     # print("Mapping from matrix index to URL:")
 
@@ -160,6 +159,8 @@ def dotProduct(pi,b):
     for i in range(len(pi)):
         sum+=pi[i]*b[i]
     return sum
+
+
 
 # print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
