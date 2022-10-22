@@ -223,8 +223,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-file = open("mapping.txt","r")
-print()
 print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 

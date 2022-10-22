@@ -1,8 +1,13 @@
 from math import log
 import json
-# import crawler
 
-# crawler.mapping
+
+#Create mapping
+file = open("mapping.txt","r")
+mapping = file.readlines()[0].split()
+file.close()
+
+
 def grabNewDict():
     with open('output.json') as output:
         return json.load(output)
