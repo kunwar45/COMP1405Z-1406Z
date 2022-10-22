@@ -1,3 +1,4 @@
+from cgi import test
 import webdev
 import improvedqueue
 import json
@@ -52,6 +53,8 @@ def crawl(seed):
     pageRanks,mapping = createPageRanks(newDict)
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
+    
+    createFiles(newDict,mapping)
     # print(mapping)
     with open('output.json', 'w+') as file:
         json.dump(newDict, file)
@@ -158,8 +161,70 @@ def dotProduct(pi,b):
         sum+=pi[i]*b[i]
     return sum
 
+def createFiles(newDict,mapping):
 
+    #Delete previous pages
+    if os.path.exists("pages"):
+        deleteFolder("pages")
+    os.makedirs("pages")
 
-# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+    #Create file for the mapping of all the URLs
+    file = open("mapping.txt","w")
+    file.write(" ".join(mapping))
+    file.close()
+    
+    for urlNum in range(len(mapping)):
+        #Create a directory for the URL
+        url_path = os.path.join("pages",str(urlNum))
+        os.makedirs(url_path)
+        
+        #Create file for incominglinks
+        file = open(os.path.join(url_path,"incominglinks.txt"),"w")
+        file.write(" ".join(newDict[mapping[urlNum]]["incominglinks"]))
+        file.close()
+        
+        #Create file for outgoinglinks
+        file = open(os.path.join(url_path,"outgoinglinks.txt"),"w")
+        file.write(" ".join(newDict[mapping[urlNum]]["outgoinglinks"]))
+        file.close()
+
+        #Create file for the frequency of each word in the url
+        os.makedirs( wordsPath:= os.path.join(url_path,"countAll") )
+        for word in newDict[mapping[urlNum]]["countAll"]:
+            file = open(os.path.join(wordsPath,word + ".txt"),"w")
+            file.write(str(newDict[mapping[urlNum]]["countAll"][word]))
+            file.close()
+        
+        #Create file for the total word count of the page
+        file = open(os.path.join(url_path,"wordCount.txt"),"w")
+        file.write(str(newDict[mapping[urlNum]]["wordCount"]))
+        file.close()
+
+        #For wordVectors
+        # os.makedirs( vectorsPath:= os.path.join(url_path,"wordVectors") )
+        # for word in newDict[mapping[urlNum]]["wordVectors"]:
+        #     file = open(os.path.join(vectorsPath,word + ".txt"),"w")
+        #     file.write(str(newDict[mapping[urlNum]]["wordVectors"][word]))
+        #     file.close()
+
+        #Create file for the page rank
+        file = open(os.path.join(url_path,"pageRank.txt"),"w")
+        file.write(str(newDict[mapping[urlNum]]["pageRank"]))
+        file.close()
+
+#Recursive function that goes through everything inside a folder and deletes it all
+def deleteFolder(folder):
+    files = os.listdir(folder)
+    for file in files:
+        file_path = os.path.join(folder,file)
+        if file.endswith(".txt"):
+            os.remove(file_path)
+        else:
+            deleteFolder(file_path)
+    os.rmdir(folder)
+
+file = open("mapping.txt","r")
+print()
+print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 
