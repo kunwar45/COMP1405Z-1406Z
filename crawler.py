@@ -1,13 +1,7 @@
-from cgi import test
 import webdev
 import improvedqueue
-import json
 import os
 from matmult import euclidean_dist, mult_scalar
-
-ALPHA = 0.1
-DISTANCE_THRESHOLD = 0.0001
-
 
 '''
 Pseudocode:
@@ -54,11 +48,8 @@ def crawl(seed):
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
     
-    createFiles(newDict,mapping)
-    # print(mapping)
-    with open('output.json', 'w+') as file:
-        json.dump(newDict, file)
-    # print(newDict)
+    createFiles(newDict)
+
     return count
 
 # Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
@@ -106,6 +97,8 @@ def createSubString(str, start, end):
     return str[(str.index(start)+1):str.index(end)]
 
 def createPageRanks(newDict):
+    ALPHA = 0.1
+    DISTANCE_THRESHOLD = 0.0001
     mapping = []
     # print("Mapping from matrix index to URL:")
 
@@ -161,43 +154,39 @@ def dotProduct(pi,b):
         sum+=pi[i]*b[i]
     return sum
 
-def createFiles(newDict,mapping):
+def createFiles(newDict):
 
     #Delete previous pages
     if os.path.exists("pages"):
         deleteFolder("pages")
     os.makedirs("pages")
-
-    #Create file for the mapping of all the URLs
-    file = open("mapping.txt","w")
-    file.write(" ".join(mapping))
-    file.close()
     
-    for urlNum in range(len(mapping)):
+    for url in newDict:
         #Create a directory for the URL
-        url_path = os.path.join("pages",str(urlNum))
+        new_url = url.replace('/','{')[:-5].replace(':','}')
+        url_path = os.path.join("pages",new_url)
         os.makedirs(url_path)
         
         #Create file for incominglinks
         file = open(os.path.join(url_path,"incominglinks.txt"),"w")
-        file.write(" ".join(newDict[mapping[urlNum]]["incominglinks"]))
+        file.write(" ".join(newDict[url]["incominglinks"]))
         file.close()
         
         #Create file for outgoinglinks
         file = open(os.path.join(url_path,"outgoinglinks.txt"),"w")
-        file.write(" ".join(newDict[mapping[urlNum]]["outgoinglinks"]))
+        file.write(" ".join(newDict[url]["outgoinglinks"]))
         file.close()
 
         #Create file for the frequency of each word in the url
         os.makedirs( wordsPath:= os.path.join(url_path,"countAll") )
-        for word in newDict[mapping[urlNum]]["countAll"]:
+        for word in newDict[url]["countAll"]:
             file = open(os.path.join(wordsPath,word + ".txt"),"w")
-            file.write(str(newDict[mapping[urlNum]]["countAll"][word]))
+            file.write(str(newDict[url]["countAll"][word]))
             file.close()
         
         #Create file for the total word count of the page
         file = open(os.path.join(url_path,"wordCount.txt"),"w")
-        file.write(str(newDict[mapping[urlNum]]["wordCount"]))
+        file.write(str(newDict[url]["wordCount"]))
         file.close()
 
         #For wordVectors
@@ -209,7 +198,7 @@ def createFiles(newDict,mapping):
 
         #Create file for the page rank
         file = open(os.path.join(url_path,"pageRank.txt"),"w")
-        file.write(str(newDict[mapping[urlNum]]["pageRank"]))
+        file.write(str(newDict[url]["pageRank"]))
         file.close()
 
 #Recursive function that goes through everything inside a folder and deletes it all
