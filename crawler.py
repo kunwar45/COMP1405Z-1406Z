@@ -4,7 +4,6 @@ import json
 import os
 from matmult import euclidean_dist, mult_scalar
 
-mapping = []
 ALPHA = 0.1
 DISTANCE_THRESHOLD = 0.0001
 
@@ -32,7 +31,6 @@ parse(url)
 
 def crawl(seed):
     newDict = {}
-    global mapping
     queueDict,queueList = {seed:1},[seed]
     
     url = improvedqueue.removestart(queueList,queueDict)
@@ -51,10 +49,10 @@ def crawl(seed):
         url = improvedqueue.removestart(queueList,queueDict)
         count+=1
 
-    pageRanks = createPageRanks(newDict)
+    pageRanks,mapping = createPageRanks(newDict)
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
-    print(mapping)
+    # print(mapping)
     with open('output.json', 'w+') as file:
         json.dump(newDict, file)
     # print(newDict)
@@ -105,7 +103,7 @@ def createSubString(str, start, end):
     return str[(str.index(start)+1):str.index(end)]
 
 def createPageRanks(newDict):
-    global mapping
+    mapping = []
     # print("Mapping from matrix index to URL:")
 
     for url in newDict:
@@ -152,7 +150,7 @@ def createPageRanks(newDict):
             new_pi.append(dotProduct(pi, [x[i] for x in matrix]))
         euclid_dist = euclidean_dist([pi],[new_pi])
         pi = new_pi
-    return pi
+    return pi,mapping
 
 def dotProduct(pi,b):
     sum = 0
