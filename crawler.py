@@ -64,6 +64,7 @@ def parse(url, newDict):
         newDict[url] = {}
     if "incominglinks" not in newDict[url]:
         newDict[url]["incominglinks"] = []
+    newDict[url]["title"] = ""
     newDict[url]["outgoinglinks"] = []
     newDict[url]["countAll"] = {}
     newDict[url]["wordCount"] = 0
