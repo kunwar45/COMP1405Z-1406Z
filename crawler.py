@@ -1,3 +1,5 @@
+from math import log
+from xxlimited import new
 import webdev
 import improvedqueue
 import os
@@ -47,6 +49,10 @@ def crawl(seed):
     pageRanks,mapping = createPageRanks(newDict)
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
+
+    for link in newDict.keys():
+        for word in link["countAll"].keys():
+            link["wordVectors"]["tf-idf"][word] = get_tf_idf(url, word, newDict)
     
     createFiles(newDict)
 
@@ -61,7 +67,7 @@ def parse(url, newDict):
     newDict[url]["outgoinglinks"] = []
     newDict[url]["countAll"] = {}
     newDict[url]["wordCount"] = 0
-    newDict[url]["wordVectors"] = []
+    newDict[url]["wordVectors"] = {}
     newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
@@ -90,11 +96,35 @@ def parse(url, newDict):
                 newDict[url]["countAll"][index] += 1
             else:
                 newDict[url]["countAll"][index] = 1
+        
+    
+    
     return newDict
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
     return str[(str.index(start)+1):str.index(end)]
+
+def get_idf(word, newDict):
+    counter = 0
+    for url in newDict:
+        if word in newDict[url]["countAll"]:
+            counter +=1
+    
+    if counter == 0: return 0
+
+    return log( len(newDict)/(1 + counter), 2)
+
+def get_tf(URL, word, newDict):
+    if URL not in newDict:
+        return 0
+    if word in newDict[URL]["countAll"]:
+        return newDict[URL]["countAll"][word]/(newDict[URL])["wordCount"]
+    return 0
+
+def get_tf_idf(URL, word, newDict):
+    tfidf = log(1+ get_tf(URL, word, newDict), 2)* get_idf(word, newDict)
+    return tfidf
 
 def createPageRanks(newDict):
     ALPHA = 0.1
