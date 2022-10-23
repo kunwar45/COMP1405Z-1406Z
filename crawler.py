@@ -51,8 +51,8 @@ def crawl(seed):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
 
     for link in newDict.keys():
-        for word in link["countAll"].keys():
-            link["wordVectors"]["tf-idf"][word] = get_tf_idf(url, word, newDict)
+        for word in newDict[link]["countAll"].keys():
+            newDict[link]["wordVectors"]["tf-idf"][word] = get_tf_idf(url, word, newDict)
     
     createFiles(newDict)
 
@@ -67,14 +67,20 @@ def parse(url, newDict):
     newDict[url]["outgoinglinks"] = []
     newDict[url]["countAll"] = {}
     newDict[url]["wordCount"] = 0
+
+    # Could probably just remove wordVectors and make tf-idf from the start.
     newDict[url]["wordVectors"] = {}
+    newDict[url]["wordVectors"]["tf-idf"] = {}
     newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
+
     if parsed == "":
         return -1
     for index in parsed.split():
-        if "href" in index:
+        if "title" in index:
+            newDict[url]["title"] = createSubString(index, "<title>", "</title>")
+        elif "href" in index:
 
             lastSlash = len(url) - url[::-1].find('/')
             outgoingLink = url[:lastSlash] + createSubString(index, '/', '>').strip('"')
@@ -96,14 +102,12 @@ def parse(url, newDict):
                 newDict[url]["countAll"][index] += 1
             else:
                 newDict[url]["countAll"][index] = 1
-        
-    
     
     return newDict
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
-    return str[(str.index(start)+1):str.index(end)]
+    return str[(str.index(start)+len(start)):str.index(end, (str.index(start)+len(start)))]
 
 def get_idf(word, newDict):
     counter = 0
