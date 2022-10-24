@@ -55,11 +55,7 @@ def crawl(seed):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
     
     #Creates
-    start = time.time()
     createFiles(newDict)
-    end = time.time()
-    print("Mac is superior",end-start)
-
     return count
 
 # Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
@@ -243,6 +239,10 @@ def createFiles(newDict):
         file.write(str(newDict[url]["pageRank"]))
         file.close()
 
+        file = open(os.path.join(url_path,"title.txt"),"w")
+        file.write(str(newDict[url]["title"]))
+        file.close()
+
 #Recursive function that goes through everything inside a folder and deletes it all
 def deleteFolder(folder):
     files = os.listdir(folder)
@@ -254,6 +254,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-print(crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html"))
+print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 

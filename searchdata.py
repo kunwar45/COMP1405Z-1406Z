@@ -26,6 +26,12 @@ def get_page_rank(URL):
         return float(readFile(os.path.join("pages",new_url,"pageRank.txt"))[0])
     return -1
 
+def get_title(URL):
+    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    if os.path.exists(os.path.join("pages",new_url)):
+        return str(readFile(os.path.join("pages",new_url,"title.txt"))[0])
+    return None
+
 def get_idf(word):
     if os.path.exists(path:=os.path.join("Idfs",f"{word}.txt")):
         return float(readFile(path)[0])
