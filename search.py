@@ -34,16 +34,21 @@ def search(phrase:str, boost):
         documentVector = []
         for word in phraseUniques:
             documentVector.append(searchdata.get_tf_idf(url + ".html",word))
-        print(documentVector)
+        # print(documentVector)
         sim = cosineSim(phraseVector,documentVector)
         if boost:
             sim = sim*searchdata.get_page_rank(url+".html")
-        urlSimMap[sim] = url
+        
+        if sim in urlSimMap:
+            urlSimMap[sim].append(url)
+        else:
+            urlSimMap[sim] = [url]
 
         #Insert the doasort
         insert = 0
         if (length:=len(cosineSimilarities))>=1:
             for i in range(10):
+                print("length",length,"i",i)
                 if i == length:
                     cosineSimilarities.insert(insert,sim)
                     break
@@ -53,6 +58,7 @@ def search(phrase:str, boost):
                     break
                 else:
                     cosineSimilarities.insert(insert,sim)
+                    print(cosineSimilarities)
                     break
         else:
             cosineSimilarities.append(sim)
@@ -61,7 +67,7 @@ def search(phrase:str, boost):
     results = []
     for i in cosineSimilarities:
         result = {}
-        URL = urlSimMap[i]
+        URL = urlSimMap[i].pop(0)
         new_url = URL.replace('{','/').replace('}',':') + ".html"
         result["url"] = new_url
         result["title"] = searchdata.get_title(new_url)
@@ -99,10 +105,9 @@ def getPhraseVector(phraseWords):
         tf = phraseUniques[word]/len(phraseWords)
         print(tf)
         phraseVector.append( log(1+tf, 2) * phraseIdfs[word])
-    print(phraseVector)
     return phraseVector,phraseUniques
 
-# print(search("coconut coconut orange blueberry lime lime lime tomato",True))
-# print(getPhraseVector(["apple","peach"]))
+# crawler.crawl('http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html')
+# print(search('coconut coconut orange blueberry lime lime lime tomato',True))
 # search("I want an apple", False)
 
