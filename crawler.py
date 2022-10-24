@@ -58,7 +58,7 @@ def crawl(seed):
     start = time.time()
     createFiles(newDict)
     end = time.time()
-    print("Mac is inferior",end-start)
+    print("Mac is superior",end-start)
 
     return count
 
@@ -254,6 +254,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+print(crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 
