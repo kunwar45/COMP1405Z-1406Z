@@ -1,5 +1,4 @@
 from math import log
-from xxlimited import new
 import webdev
 import improvedqueue
 import os
@@ -29,9 +28,10 @@ parse(url)
 def crawl(seed):
     newDict = {}
     queueDict,queueList = {seed:1},[seed]
+
+    wordIDFs = {}
     
     url = improvedqueue.removestart(queueList,queueDict)
-    # os.makedirs("0")
     count = 1
 
     while True: #Keeps crawling until there are no more links to take
@@ -46,14 +46,14 @@ def crawl(seed):
         url = improvedqueue.removestart(queueList,queueDict)
         count+=1
 
+    #Gets the mapping of the urls to the numbers and the pageranks
     pageRanks,mapping = createPageRanks(newDict)
+
+    #Adds the pageranks to the dictionary
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
-
-    for link in newDict.keys():
-        for word in newDict[link]["countAll"].keys():
-            newDict[link]["wordVectors"]["tf-idf"][word] = get_tf_idf(url, word, newDict)
     
+    #Creates 
     createFiles(newDict)
 
     return count
@@ -68,10 +68,8 @@ def parse(url, newDict):
     newDict[url]["outgoinglinks"] = []
     newDict[url]["countAll"] = {}
     newDict[url]["wordCount"] = 0
+    newDict[url]["tf-idf"] = {}
 
-    # Could probably just remove wordVectors and make tf-idf from the start.
-    newDict[url]["wordVectors"] = {}
-    newDict[url]["wordVectors"]["tf-idf"] = {}
     newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
@@ -117,7 +115,6 @@ def get_idf(word, newDict):
             counter +=1
     
     if counter == 0: return 0
-
     return log( len(newDict)/(1 + counter), 2)
 
 def get_tf(URL, word, newDict):
@@ -194,7 +191,10 @@ def createFiles(newDict):
     #Delete previous pages
     if os.path.exists("pages"):
         deleteFolder("pages")
+    if os.path.exists("Idfs"):
+        deleteFolder("Idfs")
     os.makedirs("pages")
+    os.makedirs("Idfs")
     
     for url in newDict:
         #Create a directory for the URL
@@ -224,14 +224,17 @@ def createFiles(newDict):
         file.write(str(newDict[url]["wordCount"]))
         file.close()
 
-        #For wordVectors
-        # os.makedirs( vectorsPath:= os.path.join(url_path,"wordVectors") )
-        # for word in newDict[mapping[urlNum]]["wordVectors"]:
-        #     file = open(os.path.join(vectorsPath,word + ".txt"),"w")
-        #     file.write(str(newDict[mapping[urlNum]]["wordVectors"][word]))
-        #     file.close()
-
-        #Create file for the page rank
+        #For IDFs
+        for word in newDict[url]["countAll"].keys():
+            idfspath = os.path.join("Idfs",f"{word}.txt")
+            if not os.path.exists(idfspath):
+                file = open(idfspath,"w")
+                file.write(str(get_idf(word,newDict)))
+                file.close()
+            file = open(os.path.join(url_path,"countAll",f"{word}.txt"),"a")
+            file.write(" " + str(get_tf_idf(url, word, newDict)) + " " + str(get_tf(url, word, newDict)))
+            file.close()
+            
         file = open(os.path.join(url_path,"pageRank.txt"),"w")
         file.write(str(newDict[url]["pageRank"]))
         file.close()
@@ -247,6 +250,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/"))
 

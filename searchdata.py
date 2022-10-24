@@ -1,5 +1,5 @@
-from math import log
-import json
+# from math import log
+# import json
 import os
 
 def readFile(path):
@@ -14,7 +14,6 @@ def get_outgoing_links(URL):
         return readFile(os.path.join("pages",new_url,"outgoinglinks.txt"))[0].split()
     return None
     
-
 def get_incoming_links(URL):
     new_url = URL.replace('/','{')[:-5].replace(':','}')
     if os.path.exists(os.path.join("pages",new_url)):
@@ -27,28 +26,23 @@ def get_page_rank(URL):
         return float(readFile(os.path.join("pages",new_url,"pageRank.txt"))[0])
     return -1
 
-# def get_idf(word):
-#     newDict = grabNewDict()
-#     counter = 0
-#     for url in newDict:
-#         if word in newDict[url]["countAll"]:
-#             counter +=1
-    
-#     if counter == 0: return 0
-#     idf = log( len(newDict)/(1 + counter), 2)
+def get_idf(word):
+    if os.path.exists(path:=os.path.join("Idfs",f"{word}.txt")):
+        return float(readFile(path)[0])
+    return 0
 
-#     return idf
+def get_tf(URL,word):
+    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    if os.path.exists(urlPath:=os.path.join("pages",new_url)):
+        if os.path.exists(path:=os.path.join(urlPath,"countAll",f"{word}.txt")):
+            return float(readFile(path)[0].split()[2])
+    return 0
 
-# def get_tf(URL, word):
-#     newDict = grabNewDict()
-#     if URL not in newDict:
-#         return 0
-#     if word in newDict[URL]["countAll"]:
-#         return newDict[URL]["countAll"][word]/(newDict[URL])["wordCount"]
-#     return 0
-
-# def get_tf_idf(URL, word):
-#     tfidf = log(1+ get_tf(URL,word), 2)* get_idf(word)
-#     return tfidf
+def get_tf_idf(URL, word):
+    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    if os.path.exists(urlPath:=os.path.join("pages",new_url)):
+        if os.path.exists(path:=os.path.join(urlPath,"countAll",f"{word}.txt")):
+            return float(readFile(path)[0].split()[1])
+    return 0
 
 # print(get_outgoing_links('http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html'))
