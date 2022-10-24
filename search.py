@@ -14,9 +14,8 @@ def search(phrase:str, boost):
     #Step 3: Multiply by pageRank is boost is True
 
     phraseWords = phrase.split()
-    
-
-
+    phraseIdfs = []
+    for word in phraseWords
 
     return []
 

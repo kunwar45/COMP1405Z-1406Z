@@ -1,5 +1,3 @@
-
-
 def compare_doubles(a, b):
     return abs(a-b) < 0.0001
     
