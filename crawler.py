@@ -2,6 +2,7 @@ from math import log
 import webdev
 import improvedqueue
 import os
+import time
 from matmult import euclidean_dist, mult_scalar
 
 '''
@@ -53,8 +54,11 @@ def crawl(seed):
     for rank in range(len(pageRanks)):
         newDict[mapping[rank]]["pageRank"] = pageRanks[rank]
     
-    #Creates 
+    #Creates
+    start = time.time()
     createFiles(newDict)
+    end = time.time()
+    print("Mac is inferior",end-start)
 
     return count
 

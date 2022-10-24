@@ -15,12 +15,16 @@ def search(phrase:str, boost):
 
     phraseWords = phrase.split()
     phraseIdfs = []
-    for word in phraseWords
-
+    for word in phraseWords:
+        if idf:=searchdata.get_idf(word) == 0:
+            phraseWords = list(filter((word).__ne__,phraseWords))
+        
+    print(phraseWords)
     return []
 
 # Still reading
 def cosineSim(a, b):
     return (crawler.dotProduct(a, b))/(mat.euclidean_dist(a, b))
 
+search("Gang",False)
 # search("I want an apple", False)
