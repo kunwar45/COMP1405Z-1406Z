@@ -83,8 +83,7 @@ def parse(url, newDict):
             else:
                 lastSlash = len(url) - url[::-1].find('/') # last slash of initial url to append relative link to
                 outgoingLink = url[:lastSlash] + createSubString(index, 'href="./', '"')
-                newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
-                
+                newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing 
             #Put the current url in the outgoing link's incoming links
             if outgoingLink in newDict:
                 if "incominglinks" in newDict[outgoingLink]:
@@ -106,6 +105,8 @@ def parse(url, newDict):
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
+    if ((start not in str) or (end not in str[str.index(start)+len(start):])):
+        return 0
     return str[(str.index(start)+len(start)):str.index(end, (str.index(start)+len(start)))]
 
 #Returns the inverse term frequency of a word from a URL, O(n) as it loops through each url in newDict
