@@ -9,28 +9,28 @@ def readFile(path):
 
 #Returns outgoing links, O(n) as the file gets larger as there are more links
 def get_outgoing_links(URL): 
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(os.path.join("pages",new_url)):
         return readFile(os.path.join("pages",new_url,"outgoinglinks.txt"))[0].split()
     return None
 
 #Returns incoming links, O(n) as the file gets larger as there are more links
 def get_incoming_links(URL):
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(os.path.join("pages",new_url)):
         return readFile(os.path.join("pages",new_url,"incominglinks.txt"))[0].split()
     return None
 
 #Returns the pageRank of a page, O(1) since the file doesn't get larger as there are more urls
 def get_page_rank(URL):
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(os.path.join("pages",new_url)):
         return float(readFile(os.path.join("pages",new_url,"pageRank.txt"))[0])
     return -1
 
 #Returns the title of a page, O(1) since the file doesn't get larger as there are more urls
 def get_title(URL):
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(os.path.join("pages",new_url)):
         return str(readFile(os.path.join("pages",new_url,"title.txt"))[0])
     return None
@@ -43,7 +43,7 @@ def get_idf(word):
 
 #Returns the tf of a page, O(1) since the file doesn't get larger as there are more urls
 def get_tf(URL,word):
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(urlPath:=os.path.join("pages",new_url)):
         if os.path.exists(path:=os.path.join(urlPath,"countAll",f"{word}.txt")):
             return float(readFile(path)[0].split()[2])
@@ -51,7 +51,7 @@ def get_tf(URL,word):
 
 #Returns the tf-idf of a page, O(1) since the file doesn't get larger as there are more urls
 def get_tf_idf(URL, word):
-    new_url = URL.replace('/','{')[:-5].replace(':','}')
+    new_url = URL.replace('/','{').replace(':','}').replace('.','(')
     if os.path.exists(urlPath:=os.path.join("pages",new_url)):
         if os.path.exists(path:=os.path.join(urlPath,"countAll",f"{word}.txt")):
             return float(readFile(path)[0].split()[1])
