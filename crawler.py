@@ -30,7 +30,7 @@ def crawl(seed):
     newDict = {}
     queueDict,queueList = {seed:1},[seed]
 
-    wordIDFs = {}
+    # wordIDFs = {}
     
     url = improvedqueue.removestart(queueList,queueDict)
     count = 1
@@ -80,11 +80,13 @@ def parse(url, newDict):
         if "title" in index:
             newDict[url]["title"] = createSubString(index, "<title>", "</title>")
         elif "href" in index:
-
-            lastSlash = len(url) - url[::-1].find('/')
-            outgoingLink = url[:lastSlash] + createSubString(index, '/', '>').strip('"')
-            newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
-            # add the current url to the outgoing link's incoming links
+            if ("http" in index):
+                outgoingLink = index
+            else:
+                lastSlash = len(url) - url[::-1].find('/') # last slash of initial url to append relative link to
+                outgoingLink = url[:lastSlash] + createSubString(index, '/', '>').strip('"')
+                newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
+                # add the current url to the outgoing link's incoming links
             
             if outgoingLink in newDict:
                 if "incominglinks" in newDict[outgoingLink]:
@@ -254,6 +256,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url(" http://ryangchung.github.io/"))
 
