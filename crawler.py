@@ -105,6 +105,8 @@ def parse(url, data):
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
+    if ((start not in str) or (end not in str[str.index(start)+len(start):])):
+        return 0
     return str[(str.index(start)+len(start)):str.index(end, (str.index(start)+len(start)))]
 
 #Returns the inverse term frequency of a word from a URL, O(n) as it loops through each url in data
