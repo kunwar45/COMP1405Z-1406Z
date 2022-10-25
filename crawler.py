@@ -73,7 +73,6 @@ def parse(url, newDict):
     newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
-
     if parsed == "":
         return -1
     for index in parsed.split():
@@ -85,7 +84,6 @@ def parse(url, newDict):
             else:
                 lastSlash = len(url) - url[::-1].find('/') # last slash of initial url to append relative link to
                 outgoingLink = url[:lastSlash] + createSubString(index, 'href="./', '">')
-                print(outgoingLink)
                 newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
                 # add the current url to the outgoing link's incoming links
             

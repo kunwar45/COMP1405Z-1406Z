@@ -34,7 +34,7 @@ def search(phrase:str, boost):
                 elif sim<cosineSimilarities[i]:
                     insert+=1
                 elif insert == 9:
-                    print("at max")
+                    # print("at max")
                     break
                 else:
                     cosineSimilarities.insert(insert,sim)
@@ -93,7 +93,7 @@ def getPhraseVector(phraseWords):
         phraseVector.append( log(1+tf, 2) * phraseIdfs[word])
     return phraseVector,phraseUniques
 
-crawler.crawl('http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html')
-print(len(search('banana peach tomato tomato pear peach peach',False)))
+# crawler.crawl('http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html')
+# print(len(search('banana peach tomato tomato pear peach peach',False)))
 # search("I want an apple", False)
 
