@@ -24,7 +24,7 @@ def search(phrase:str, boost):
         if boost:
             sim = sim*searchdata.get_page_rank(url)
         
-        #Inserts new cosine similarity into the top 10 which makes it worst case O(11) which is O(1)
+        #Inserts new cosine similarity into the top 11 which makes it worst case O(11) which is O(1)
         list_cap = 11
         insert = 0
         if (length:=len(cosineSimilarities))>=1:
@@ -49,7 +49,7 @@ def search(phrase:str, boost):
             urlSort.pop(10)
     
     results = []
-    #Formats the top 10 cosine similarities into results
+    #Formats the top 11 into a top 10 cosine similarity results
     if len(cosineSimilarities)>10:
         length = 10
     else:

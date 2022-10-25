@@ -28,6 +28,7 @@ parse(url)
 
 def crawl(seed):
     data = {} #holds all the parsed values
+    IDFs = {}
     queueDict,queueList = {seed:1},[seed] #Improved queue variables used to make checking the queue O(1)
 
     url = improvedqueue.removestart(queueList,queueDict)
@@ -39,7 +40,14 @@ def crawl(seed):
         for outgoingLink in data[url]["outgoinglinks"]:
             if not improvedqueue.containshash(queueDict,outgoingLink) and "outgoinglinks" not in data[outgoingLink]:
                 improvedqueue.addend(queueList,queueDict,outgoingLink)
-                
+
+        #Adds to the frequency of urls that have a word
+        for word in data[url]["countAll"]:
+            if word in IDFs:
+                IDFs[word] += 1
+            else:
+                IDFs[word] = 1
+
         if len(queueList) == 0:
             break
         url = improvedqueue.removestart(queueList,queueDict)
@@ -53,7 +61,7 @@ def crawl(seed):
         data[mapping[rank]]["pageRank"] = pageRanks[rank]
     
     #Creates all the files for searchdata.py to use
-    createFiles(data)
+    createFiles(data,IDFs)
     return count
 
 # Returns the updated dictionary that has all the parsed information of the url
@@ -99,8 +107,7 @@ def parse(url, data):
             if index in data[url]["countAll"]:
                 data[url]["countAll"][index] += 1
             else:
-                data[url]["countAll"][index] = 1
-    
+                data[url]["countAll"][index] = 1    
     return data
 
 # Returns non inclusive substring from in between two characters of a string
@@ -109,15 +116,13 @@ def createSubString(str, start, end):
         return 0
     return str[(str.index(start)+len(start)):str.index(end, (str.index(start)+len(start)))]
 
-#Returns the inverse term frequency of a word from a URL, O(n) as it loops through each url in data
-def get_idf(word, data):
-    counter = 0
-    for url in data:
-        if word in data[url]["countAll"]:
-            counter +=1
-    
-    if counter == 0: return 0
-    return log( len(data)/(1 + counter), 2)
+#Returns the inverse term frequency of a word from a URL, O(1) as it uses the IDFs dictionary
+def get_idf(word, totalUrls, IDFs):
+    if word in IDFs:
+        counter = IDFs[word]
+    else:
+        return 0
+    return log( totalUrls/(1 + counter), 2)
 
 #Returns the term frequency of a word from a URL, O(1) as the 'in' keyword is constant when dealing with dictionaries
 def get_tf(URL, word, data):
@@ -128,8 +133,8 @@ def get_tf(URL, word, data):
     return 0
 
 #Returns the tf-idf of a word from a URL, O(n) as the get_idf function is O(n)
-def get_tf_idf(URL, word, data):
-    tfidf = log(1+ get_tf(URL, word, data), 2)* get_idf(word, data)
+def get_tf_idf(URL, word, data, IDFs):
+    tfidf = log(1+ get_tf(URL, word, data), 2)* get_idf(word, len(data), IDFs)
     return tfidf
 
 #Creates all the pageRanks, O(n^2*m) as looping dot product is O(n^2), n being the number of links, and the while loop on top of it is
@@ -185,7 +190,7 @@ def dotProduct(pi,b):
     return sum
 
 #Creates files for all the values in the dictionary so that searchData can be O(1)
-def createFiles(data):
+def createFiles(data, IDFs):
 
     #Delete previous pages
     if os.path.exists("pages"):
@@ -228,10 +233,10 @@ def createFiles(data):
             idfspath = os.path.join("Idfs",f"{word}.txt")
             if not os.path.exists(idfspath):
                 file = open(idfspath,"w")
-                file.write(str(get_idf(word,data)))
+                file.write(str(get_idf(word,len(data),IDFs)))
                 file.close()
             file = open(os.path.join(url_path,"countAll",f"{word}.txt"),"a")
-            file.write(" " + str(get_tf_idf(url, word, data)) + " " + str(get_tf(url, word, data)))
+            file.write(" " + str(get_tf_idf(url, word, data, IDFs)) + " " + str(get_tf(url, word, data)))
             file.close()
         
         #Creating a file for the pageRanks
