@@ -72,7 +72,6 @@ def parse(url, newDict):
     newDict[url]["pageRank"] = 0
 
     parsed = webdev.read_url(url)
-
     if parsed == "":
         return -1
     for index in parsed.split():
