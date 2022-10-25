@@ -79,10 +79,10 @@ def parse(url, newDict):
             newDict[url]["title"] = createSubString(index, "<title>", "</title>")
         elif "href" in index:
             if ("http" in index):
-                outgoingLink = createSubString(index, 'href="', '">')
+                outgoingLink = createSubString(index, 'href="', '"')
             else:
                 lastSlash = len(url) - url[::-1].find('/') # last slash of initial url to append relative link to
-                outgoingLink = url[:lastSlash] + createSubString(index, 'href="./', '">')
+                outgoingLink = url[:lastSlash] + createSubString(index, 'href="./', '"')
                 newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
                 
             #Put the current url in the outgoing link's incoming links
