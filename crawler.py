@@ -27,11 +27,9 @@ parse(url)
 '''
 
 def crawl(seed):
-    newDict = {}
-    queueDict,queueList = {seed:1},[seed]
+    newDict = {} #holds all the parsed values
+    queueDict,queueList = {seed:1},[seed] #Improved queue variables used to make checking the queue O(1)
 
-    # wordIDFs = {}
-    
     url = improvedqueue.removestart(queueList,queueDict)
     count = 1
 
@@ -47,7 +45,7 @@ def crawl(seed):
         url = improvedqueue.removestart(queueList,queueDict)
         count+=1
 
-    #Gets the mapping of the urls to the numbers and the pageranks
+    #Gets the mapping of the urls to the numbers and the pageranks, O(n^3)
     pageRanks,mapping = createPageRanks(newDict)
 
     #Adds the pageranks to the dictionary
@@ -58,8 +56,9 @@ def crawl(seed):
     createFiles(newDict)
     return count
 
-# Returns list of urls present in a given webpage --- could rename to getUrls(seed) for clarity
+# Returns the updated dictionary that has all the parsed information of the url
 def parse(url, newDict):
+    #Creating the dictionary keys
     if url not in newDict:
         newDict[url] = {}
     if "incominglinks" not in newDict[url]:
@@ -85,10 +84,9 @@ def parse(url, newDict):
             else:
                 lastSlash = len(url) - url[::-1].find('/') # last slash of initial url to append relative link to
                 outgoingLink = url[:lastSlash] + createSubString(index, 'href="./', '">')
-                print(outgoingLink)
                 newDict[url]["outgoinglinks"].append(outgoingLink) # add the outgoing link
-                # add the current url to the outgoing link's incoming links
-            
+                
+            #Put the current url in the outgoing link's incoming links
             if outgoingLink in newDict:
                 if "incominglinks" in newDict[outgoingLink]:
                     newDict[outgoingLink]["incominglinks"].append(url)
@@ -111,6 +109,7 @@ def parse(url, newDict):
 def createSubString(str, start, end):
     return str[(str.index(start)+len(start)):str.index(end, (str.index(start)+len(start)))]
 
+#Returns the inverse term frequency of a word from a URL, O(n) as it loops through each url in newDict
 def get_idf(word, newDict):
     counter = 0
     for url in newDict:
@@ -120,6 +119,7 @@ def get_idf(word, newDict):
     if counter == 0: return 0
     return log( len(newDict)/(1 + counter), 2)
 
+#Returns the term frequency of a word from a URL, O(1) as the 'in' keyword is constant when dealing with dictionaries
 def get_tf(URL, word, newDict):
     if URL not in newDict:
         return 0
@@ -127,52 +127,45 @@ def get_tf(URL, word, newDict):
         return newDict[URL]["countAll"][word]/(newDict[URL])["wordCount"]
     return 0
 
+#Returns the tf-idf of a word from a URL, O(n) as the get_idf function is O(n)
 def get_tf_idf(URL, word, newDict):
     tfidf = log(1+ get_tf(URL, word, newDict), 2)* get_idf(word, newDict)
     return tfidf
 
+#Creates all the pageRanks, O(n^2*m) as looping dot product is O(n^2), n being the number of links, and the while loop on top of it is
+#makes it O(n^2*m), m being the number of convergence iterations
 def createPageRanks(newDict):
     ALPHA = 0.1
     DISTANCE_THRESHOLD = 0.0001
     mapping = []
-    # print("Mapping from matrix index to URL:")
 
     for url in newDict:
         mapping.append(url)
-        # print(str(mapping.index(url)) + " -> " + url)
     
+    #Creating Adjacency matrix
     matrix = []
-
     length = len(mapping)
     for i in range(length):
         matrix.append([])
         for j in range(length):
-            # print(len(newDict[mapping[i]]["outgoinglinks"]))
             if len(ogIndexes:=newDict[mapping[i]]["outgoinglinks"]) == 0:
                 matrix[i].append(1/length)
             else:
                 matrix[i].append(1/len(ogIndexes) if mapping[j] in ogIndexes else 0)
     
-    # print("Adjacency matrix \n",matrix)
-    
     matrix = mult_scalar(matrix, 1-ALPHA) #Multiply matrix by 1-alpha
-
-    # print("Scaled Adjacency matrix \n",matrix)
 
     # Add alpha/N to each of the elements in the matrix
     for i in range(length):
         for j in range(length):
             matrix[i][j]+= (ALPHA/length)
-    
-    # print("Adjacency Matrix after adding alpha/N to each entry \n\n",matrix)
 
     pi = []
     for i in range(length):
         pi.append(1/length)
     euclid_dist = 1
     
-    #Finding Stable State
-    # print ("Creating Pi")
+    #Finding Stable State, O(n^3) as getting
     count = 0
     while(euclid_dist>=DISTANCE_THRESHOLD):
         count+=1
@@ -181,14 +174,17 @@ def createPageRanks(newDict):
             new_pi.append(dotProduct(pi, [x[i] for x in matrix]))
         euclid_dist = euclidean_dist([pi],[new_pi])
         pi = new_pi
+
     return pi,mapping
 
+#Returns the dotProduct between two vectors, O(n)
 def dotProduct(pi,b):
     sum = 0
     for i in range(len(pi)):
         sum+=pi[i]*b[i]
     return sum
 
+#Creates files for all the values in the dictionary so that searchData can be O(1)
 def createFiles(newDict):
 
     #Delete previous pages
@@ -201,7 +197,7 @@ def createFiles(newDict):
     
     for url in newDict:
         #Create a directory for the URL
-        new_url = url.replace('/','{')[:-5].replace(':','}')
+        new_url = url.replace('/','{').replace(':','}')
         url_path = os.path.join("pages",new_url)
         os.makedirs(url_path)
         
@@ -227,7 +223,7 @@ def createFiles(newDict):
         file.write(str(newDict[url]["wordCount"]))
         file.close()
 
-        #For IDFs
+        #Adding IDFs and tf-idfs
         for word in newDict[url]["countAll"].keys():
             idfspath = os.path.join("Idfs",f"{word}.txt")
             if not os.path.exists(idfspath):
@@ -237,16 +233,18 @@ def createFiles(newDict):
             file = open(os.path.join(url_path,"countAll",f"{word}.txt"),"a")
             file.write(" " + str(get_tf_idf(url, word, newDict)) + " " + str(get_tf(url, word, newDict)))
             file.close()
-            
+        
+        #Creating a file for the pageRanks
         file = open(os.path.join(url_path,"pageRank.txt"),"w")
         file.write(str(newDict[url]["pageRank"]))
         file.close()
 
+        #Creating a file for the title of each page
         file = open(os.path.join(url_path,"title.txt"),"w")
         file.write(str(newDict[url]["title"]))
         file.close()
 
-#Recursive function that goes through everything inside a folder and deletes it all
+#Recursive function that goes through everything inside a folder and deletes it all, O(n) n being the number of files to delete
 def deleteFolder(folder):
     files = os.listdir(folder)
     for file in files:
@@ -257,6 +255,6 @@ def deleteFolder(folder):
             deleteFolder(file_path)
     os.rmdir(folder)
 
-print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
 # print(webdev.read_url(" http://ryangchung.github.io/"))
 
