@@ -7,14 +7,14 @@ from math import log, sqrt
 #Search function, returns the top 10 search results for a phrase, O(n^2) as cosineSim is O(n) and it's being looped for each url
 #We can never make this O(n), with cosineSim as O(1) because even if the euclidean_norms were stored elsewhere for O(1) lookup,
 #We would have to do the dotproduct (O(n)) of EACH URL in search() as we won't have the query vector from before search()
-def search(phrase:str, boost):
+def search(phrase, boost):
     phraseWords = phrase.split()
     cosineSimilarities = []
     urlSort = []
     
     phraseVector,phraseUniques = getPhraseVector(phraseWords)
 
-    #Creates top 10 list of urls ordered by cosine similarity, O(n^2) due to looping cosineSim() n times
+    #Creates top 10 list of urls ordered by cosine similarity, O(n^2 + nm) due to looping cosineSim() n times
     files = os.listdir("pages")
     for url in files:
         documentVector = []
@@ -100,12 +100,5 @@ def getPhraseVector(phraseWords):
         phraseVector.append( log(1+tf, 2) * phraseIdfs[word])
     return phraseVector,phraseUniques
 
-start = time.time()
-crawler.crawl('http://people.scs.carleton.ca/~davidmckenney/fruits2/N-0.html')
-end = time.time()
-print(f"Crawl time is {end-start}")
-
-start = time.time()
-search('pear apple banana banana tomato tomato',True)
-end = time.time()
-print(f"Search time is {end-start}")
+crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html")
+search("apple banana blueberry banana banana", False)

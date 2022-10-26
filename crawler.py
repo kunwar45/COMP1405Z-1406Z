@@ -132,14 +132,131 @@ def get_tf(URL, word, data):
         return data[URL]["countAll"][word]/(data[URL])["wordCount"]
     return 0
 
-#Returns the tf-idf of a word from a URL, O(n) as the get_idf function is O(n)
+#Returns the tf-idf of a word from a URL, O(1) as both get_tf and get_df are O(1)
 def get_tf_idf(URL, word, data, IDFs):
     tfidf = log(1+ get_tf(URL, word, data), 2)* get_idf(word, len(data), IDFs)
     return tfidf
 
+#Returns the dotProduct between two vectors, O(n)
+def dotProduct(pi,b):
+    sum = 0
+    for i in range(len(pi)):
+        sum+=pi[i]*b[i]
+    return sum
+
+#Creates files for all the values in the dictionary so that searchData can be O(1), Requires the data dictionary and the IDFs dictionary
+#O(n*m) time complexity where m is the number of words in data[url]["countAll"] and it is being looped over (hence the n)
+def createFiles(data, IDFs):
+
+    #Delete previous pages
+    if os.path.exists("pages"):
+        deleteFolder("pages")
+    if os.path.exists("Idfs"):
+        deleteFolder("Idfs")
+    os.makedirs("pages")
+    os.makedirs("Idfs")
+    
+    for url in data:
+        #Create a directory for the URL
+        new_url = url.replace('/','{').replace(':','}').replace('.','(')
+        url_path = os.path.join("pages",new_url)
+        os.makedirs(url_path)
+        
+        #Create file for incominglinks
+        file = open(os.path.join(url_path,"incominglinks.txt"),"w")
+        file.write(" ".join(data[url]["incominglinks"]))
+        file.close()
+        
+        #Create file for outgoinglinks
+        file = open(os.path.join(url_path,"outgoinglinks.txt"),"w")
+        file.write(" ".join(data[url]["outgoinglinks"]))
+        file.close()
+
+        #Create file for the frequency of each word in the url
+        os.makedirs( wordsPath:= os.path.join(url_path,"countAll") )
+        for word in data[url]["countAll"]:
+            file = open(os.path.join(wordsPath,word + ".txt"),"w")
+            file.write(str(data[url]["countAll"][word]))
+            file.close()
+        
+        #Create file for the total word count of the page
+        file = open(os.path.join(url_path,"wordCount.txt"),"w")
+        file.write(str(data[url]["wordCount"]))
+        file.close()
+
+        #Adding IDFs and tf-idfs
+        for word in data[url]["countAll"]:
+            idfspath = os.path.join("Idfs",f"{word}.txt")
+            if not os.path.exists(idfspath):
+                file = open(idfspath,"w")
+                file.write(str(get_idf(word,len(data),IDFs)))
+                file.close()
+            file = open(os.path.join(url_path,"countAll",f"{word}.txt"),"a")
+            file.write(" " + str(get_tf_idf(url, word, data, IDFs)) + " " + str(get_tf(url, word, data)))
+            file.close()
+        
+        #Creating a file for the pageRanks
+        file = open(os.path.join(url_path,"pageRank.txt"),"w")
+        file.write(str(data[url]["pageRank"]))
+        file.close()
+
+        #Creating a file for the title of each page
+        file = open(os.path.join(url_path,"title.txt"),"w")
+        file.write(str(data[url]["title"]))
+        file.close()
+
+#Recursive function that goes through everything inside a folder and deletes it all, O(n) with n being the number of files to delete
+#Requires the folder name
+def deleteFolder(folder):
+    files = os.listdir(folder)
+    for file in files:
+        file_path = os.path.join(folder,file)
+        if file.endswith(".txt"):
+            os.remove(file_path)
+        else:
+            deleteFolder(file_path)
+    os.rmdir(folder)
+
 #Creates all the pageRanks, O(n^2*m) as looping dot product is O(n^2), n being the number of links, and the while loop on top of it is
-#makes it O(n^2*m), m being the number of convergence iterations
+#makes it O(n^2*m), m being the number of convergence iterations. It returns the pageRank vector and needs the data dictionary as a parameter
 def createPageRanks(data):
+    ALPHA = 0.1
+    DISTANCE_THRESHOLD = 0.0001
+    mapping = []
+
+    for url in data:
+        mapping.append(url)
+      
+    #Creating Probability Matrix
+    matrix = []
+    length = len(mapping)
+    for i in range(length):
+        matrix.append([])
+        for j in range(length):
+            if len(ogIndexes:=data[mapping[i]]["outgoinglinks"]) == 0:
+                matrix[i].append( ((1/length) * (1-ALPHA)) + (ALPHA/length))
+            else:
+                matrix[i].append( ((1/len(ogIndexes)) * (1-ALPHA)) + (ALPHA/length) if mapping[j] in ogIndexes else (ALPHA/length))
+
+    pi = []
+    for i in range(length):
+        pi.append(1/length)
+    euclid_dist = 1
+    
+    #Finding Stable State, O(n^2 * m) where n is the number of urls and m is the number of convergence iterations
+    count = 0
+    while(euclid_dist>=DISTANCE_THRESHOLD):
+        count+=1
+        new_pi = []
+        for i in range (length):
+            new_pi.append(dotProduct(pi, [x[i] for x in matrix]))
+        euclid_dist = euclidean_dist([pi],[new_pi])
+        pi = new_pi
+
+    return pi,mapping
+
+#This is used to test a theory I had. I reference this in the course project analysis. It simply returns the pageRank
+def createWorsePageRanks(data):
     ALPHA = 0.1
     DISTANCE_THRESHOLD = 0.0001
     mapping = []
@@ -182,84 +299,7 @@ def createPageRanks(data):
 
     return pi,mapping
 
-#Returns the dotProduct between two vectors, O(n)
-def dotProduct(pi,b):
-    sum = 0
-    for i in range(len(pi)):
-        sum+=pi[i]*b[i]
-    return sum
-
-#Creates files for all the values in the dictionary so that searchData can be O(1)
-def createFiles(data, IDFs):
-
-    #Delete previous pages
-    if os.path.exists("pages"):
-        deleteFolder("pages")
-    if os.path.exists("Idfs"):
-        deleteFolder("Idfs")
-    os.makedirs("pages")
-    os.makedirs("Idfs")
-    
-    for url in data:
-        #Create a directory for the URL
-        new_url = url.replace('/','{').replace(':','}').replace('.','(')
-        url_path = os.path.join("pages",new_url)
-        os.makedirs(url_path)
-        
-        #Create file for incominglinks
-        file = open(os.path.join(url_path,"incominglinks.txt"),"w")
-        file.write(" ".join(data[url]["incominglinks"]))
-        file.close()
-        
-        #Create file for outgoinglinks
-        file = open(os.path.join(url_path,"outgoinglinks.txt"),"w")
-        file.write(" ".join(data[url]["outgoinglinks"]))
-        file.close()
-
-        #Create file for the frequency of each word in the url
-        os.makedirs( wordsPath:= os.path.join(url_path,"countAll") )
-        for word in data[url]["countAll"]:
-            file = open(os.path.join(wordsPath,word + ".txt"),"w")
-            file.write(str(data[url]["countAll"][word]))
-            file.close()
-        
-        #Create file for the total word count of the page
-        file = open(os.path.join(url_path,"wordCount.txt"),"w")
-        file.write(str(data[url]["wordCount"]))
-        file.close()
-
-        #Adding IDFs and tf-idfs
-        for word in data[url]["countAll"].keys():
-            idfspath = os.path.join("Idfs",f"{word}.txt")
-            if not os.path.exists(idfspath):
-                file = open(idfspath,"w")
-                file.write(str(get_idf(word,len(data),IDFs)))
-                file.close()
-            file = open(os.path.join(url_path,"countAll",f"{word}.txt"),"a")
-            file.write(" " + str(get_tf_idf(url, word, data, IDFs)) + " " + str(get_tf(url, word, data)))
-            file.close()
-        
-        #Creating a file for the pageRanks
-        file = open(os.path.join(url_path,"pageRank.txt"),"w")
-        file.write(str(data[url]["pageRank"]))
-        file.close()
-
-        #Creating a file for the title of each page
-        file = open(os.path.join(url_path,"title.txt"),"w")
-        file.write(str(data[url]["title"]))
-        file.close()
-
-#Recursive function that goes through everything inside a folder and deletes it all, O(n) with n being the number of files to delete
-def deleteFolder(folder):
-    files = os.listdir(folder)
-    for file in files:
-        file_path = os.path.join(folder,file)
-        if file.endswith(".txt"):
-            os.remove(file_path)
-        else:
-            deleteFolder(file_path)
-    os.rmdir(folder)
-
-# print(crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html"))
+# print(crawl("http://people.scs.carleton.ca/~davidmckenney/fruits5/N-0.html"))
 # print(webdev.read_url(" http://ryangchung.github.io/"))
 
+    

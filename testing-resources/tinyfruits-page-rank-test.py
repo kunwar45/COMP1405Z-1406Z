@@ -2,7 +2,7 @@
 import testingtools
 import crawler
 import searchdata
-import search
+# import search
 output = open('tinyfruits-page-rank-failed.txt', 'w')
 success_output = open('tinyfruits-page-rank-passed.txt', 'w')
 
