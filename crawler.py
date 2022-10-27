@@ -2,7 +2,6 @@ from math import log
 import webdev
 import improvedqueue
 import os
-import time
 from matmult import euclidean_dist, mult_scalar
 
 '''
@@ -316,8 +315,5 @@ def createWorsePageRanks(data):
         pi = new_pi
 
     return pi,mapping
-
-# print(crawl("http://people.scs.carleton.ca/~davidmckenney/fruits5/N-0.html"))
-# print(webdev.read_url(" http://ryangchung.github.io/"))
 
     
