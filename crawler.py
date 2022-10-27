@@ -99,16 +99,34 @@ def parse(url, data):
                 data[outgoingLink]= {}
                 data[outgoingLink]["incominglinks"] = [] 
                 data[outgoingLink]["incominglinks"].append(url)
-        
+        elif (">" in index) and ("<" not in index):
+            data[url]["wordCount"]+=1
+
+            index = index[index.index('>')+1:]
+
+            if index in data[url]["countAll"]:
+                data[url]["countAll"][index] += 1
+            else:
+                data[url]["countAll"][index] = 1 
+        elif ("<" in index) and (not index.startswith("<")):
+            data[url]["wordCount"]+=1
+
+            index = index[:index.index('<')]
+            
+            if index in data[url]["countAll"]:
+                data[url]["countAll"][index] += 1
+            else:
+                data[url]["countAll"][index] = 1 
         #If it's just text from the paragraph
-        elif "<" not in index:
+        elif ("<" not in index) and (">" not in index):
             data[url]["wordCount"]+=1
 
             if index in data[url]["countAll"]:
                 data[url]["countAll"][index] += 1
             else:
-                data[url]["countAll"][index] = 1    
+                data[url]["countAll"][index] = 1   
     return data
+
 
 # Returns non inclusive substring from in between two characters of a string
 def createSubString(str, start, end):
