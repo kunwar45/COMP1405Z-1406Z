@@ -75,7 +75,6 @@ def parse(url, data):
     data[url]["countAll"] = {}
     data[url]["wordCount"] = 0
     data[url]["pageRank"] = 0
-
     parsed = webdev.read_url(url)
     if parsed == "":
         return -1

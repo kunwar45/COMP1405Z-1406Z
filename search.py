@@ -1,7 +1,6 @@
 import crawler
 import searchdata
 import os
-import time
 from math import log, sqrt
 
 #Search function, returns the top 10 search results for a phrase, O(n^2) as cosineSim is O(n) and it's being looped for each url
@@ -101,20 +100,5 @@ def getPhraseVector(phraseWords):
     return phraseVector,phraseUniques
 
 #Uncomment this code and change what page you want to use and the query here. Then run search.py
-start = time.time()
-crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html")
-end = time.time()
-print(f"Tiny crawl{end-start}")
-start = time.time()
-search("apple banana blueberry banana banana", False)
-end = time.time()
-print(f"Tiny search{end-start}")
-
-start = time.time()
-crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html")
-end = time.time()
-print(f"Big crawl{end-start}")
-start = time.time()
-search("apple banana blueberry banana banana", False)
-end = time.time()
-print(f"Bigboi {end-start}")
+# crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html")
+# search("apple banana blueberry banana banana", False)
