@@ -1,0 +1,66 @@
+Passed Test #0 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-3.html
+
+expected = 0.0819555328928385
+result = 0.0819555328928385
+
+
+Passed Test #1 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-4.html
+
+expected = 0.11896585666418055
+result = 0.11896585666418055
+
+
+Passed Test #2 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-9.html
+
+expected = 0.047437705789256435
+result = 0.047437705789256435
+
+
+Passed Test #3 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-7.html
+
+expected = 0.11939323868209492
+result = 0.11939323868209492
+
+
+Passed Test #4 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-1.html
+
+expected = 0.04626363024816037
+result = 0.04626363024816037
+
+
+Passed Test #5 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-6.html
+
+expected = 0.04626363024816037
+result = 0.04626363024816037
+
+
+Passed Test #6 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html
+
+expected = 0.32242792521306995
+result = 0.32242792521306995
+
+
+Passed Test #7 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-8.html
+
+expected = 0.12476521976591842
+result = 0.12476521976591842
+
+
+Passed Test #8 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-2.html
+
+expected = 0.04626363024816037
+result = 0.04626363024816037
+
+
+Passed Test #9 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-5.html
+
+expected = 0.04626363024816037
+result = 0.04626363024816037
+
+
+Passed Test #10 checking page rank for URL http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N.html
+
+expected = -1
+result = -1
+
+
