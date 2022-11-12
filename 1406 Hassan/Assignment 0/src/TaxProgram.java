@@ -34,7 +34,6 @@ public class TaxProgram {
 
             //Tax Breakdown formatting
             System.out.println("Here is your tax breakdown: ");
-            String strIncome = String.format("%s%,1.2f", "$",income);
             System.out.printf("%s","Income");
             System.out.printf("%47s%n",String.format("%s%,1.2f", "$",income));
             System.out.printf("%s","Dependants");

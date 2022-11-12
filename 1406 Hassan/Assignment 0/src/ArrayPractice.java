@@ -56,97 +56,99 @@ public class ArrayPractice{
 		System.out.println(longestIncreasingSequence(inc6) + " (should be 1)");
 		System.out.println();
 	}
-  
+
 	//This method should return the largest integer value contained in the argument array
 	public static int max(int[] arr){
+
 		int max = arr[0];
-		for (int i = 1; i < arr.length; i++) {
-			if (arr[i] > max) {
-				max = arr[i];
+
+		for (int i : arr){
+			if (i > max){
+				max = i;
 			}
 		}
 		return max;
 	}
-  
+
 	//This method should compute the average/mean of the values contained in the argument array.
 	public static double average(int[] arr){
 		double sum = 0;
-		for (int j : arr) {
-			sum += j;
+		for (int i : arr){
+			sum = sum + i;
 		}
-		return sum/(double)arr.length;
+		return sum/arr.length;
 	}
-  
+
 	//This method should return true if a and b are identical arrays.
 	//That is, return true if a and b have the same length and the values at each index are equal
 	//Otherwise, the method should return false
 	public static boolean areIdentical(int[] a, int[] b){
 		if (a.length != b.length){
 			return false;
-		}else{
-            for (int i = 0; i < a.length; i++){
-                if (a[i]!= b[i]){
-                    return false;
-                }
-            }
+		} else {
+			for (int i = 0; i < a.length; i++){
+				if (a[i] != b[i]){
+					return false;
+				}
+			}
 		}
 		return true;
 	}
-  
+
 	//The arguments for this method will be two sorted arrays (sorted in increasing order).
 	//The method must create and return a new sorted array that contains all the elements from a and b also in increasing order.
 	//In other words, you are merging the two sorted lists into a new sorted list.
 	//There are many ways to solve this problem, some of which are more efficient than others.
 	public static int[] merge(int[] a, int[] b){
+		int[] merged = new int[a.length + b.length];
 
-        int[] result = new int[a.length + b.length];
-        int i = 0;
-        int j = 0;
-        while (i < a.length || j < b.length){
-			if (i == a.length){
-				result[i+j] = b[j];
-				j++;
-			}else if (j == b.length){
-				result[i+j] = a[i];
+		int i = 0; int j = 0; int k = 0;
+
+		while (k < merged.length){
+			if (i < a.length && j < b.length){
+				if (a[i] < b[j]){
+					merged[k] = a[i];
+					i++;
+				} else{
+					merged[k] = b[j];
+					j++;
+				}
+			} else if (i < a.length){
+				merged[k] = a[i];
 				i++;
-			}
-            else if (a[i] < b[j]){
-			    result[i+j] = a[i];
-                i++;
-            }else if(a[i] >= b[j]) {
-				result[i + j] = b[j];
+			} else if (j < b.length){
+				merged[k] = b[j];
 				j++;
 			}
+			k++;
 		}
-		return result;
+
+		return merged;
 	}
-  
+
 	//This method should return the length of the longest increasing sequence in the argument array.
 	//An increasing sequence consists of consecutive numbers that are each larger than the previous.
 	//For example, in the array [0, 1, 2, 4, 3, 5, 7], 0-1-2-4 is an increasing sequence of length 4.
 	//In the same array, 3-5-7 is an increasing sequence of length 3.
 	//Note that 0-1-2-4-3-5-7 is not an increasing sequence as there is a 3 (which is not greater than 4) between 4 and 5.
 	public static int longestIncreasingSequence(int[] a){
-		int slidingwindow = 1;
-		int slidingstart = 0;
-		int slidingend = 0;
-		while (true){
-			if (slidingend == a.length-1){
-				if (slidingend-slidingstart+1 > slidingwindow){
-					slidingwindow = slidingend-slidingstart+1;
+		int length = 0;
+		int max = 0;
+		for (int i = 0; i < a.length; i++){
+			if (i == 0){
+				length++;
+			} else if (a[i] > a[i-1]){
+				length++;
+			} else {
+				if (length > max){
+					max = length;
 				}
-				break;
-			}
-			if (a[slidingend]<a[slidingend+1]){
-				slidingend++;
-			}else{
-				if (slidingend-slidingstart+1 > slidingwindow){
-					slidingwindow = slidingend-slidingstart+1;
-				}
-				slidingend++;
-				slidingstart = slidingend;
+				length = 1;
 			}
 		}
-		return slidingwindow;
+		if (length > max){
+			return length;
+		}
+		return max;
 	}
 }
