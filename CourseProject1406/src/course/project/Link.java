@@ -11,6 +11,7 @@ public class Link {
     private HashMap<String, Integer> countAll = new HashMap<String, Integer>();
     private String title = "";
     private double pageRank;
+    private int wordCount = 0;
 
     Link(String url) {
         this.url = url;
@@ -49,6 +50,10 @@ public class Link {
         return url;
     }
 
+    public int getWordCount() {
+        return wordCount;
+    }
+
     public void setCountAll(HashMap<String, Integer> countAll) {
         this.countAll = countAll;
     }
@@ -68,4 +73,6 @@ public class Link {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setWordCount(int wordCount) { this.wordCount = wordCount; }
 }
