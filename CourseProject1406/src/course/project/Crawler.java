@@ -89,7 +89,14 @@ public class Crawler {
 	public double getTfIdf(Link url, String word){
 		return log2(1.0 + getTf(url, word)) * getIdf(word, data.size());
 	}
-	
+
+	public double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
+		double sum = 0.0;
+		for(int i = 0; i < pi.size(); i++){
+			sum+= (double)pi.get(i) * (double)b.get(i);
+		}
+		return sum;
+	}
 
 	public static void main(String[] args) {
 		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
@@ -97,5 +104,26 @@ public class Crawler {
 
 	public static double log2(double lognum){
 		return Math.log(lognum) / Math.log(2);
+	}
+
+	public ArrayList<Double> createPageRanks(){
+		Double ALPHA = 0.1;
+		Double DISTANCE_THRESHOLD = 0.0001;
+		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
+		ArrayList<Link> mapping = new ArrayList<Link>(data.keySet());
+
+		int length = mapping.size();
+
+		for (int i = 0; i < length; i++){
+			matrix.add(new ArrayList<Double>());
+			for (int j = 0; j <length; j++){
+				ArrayList<Link> ogIndexes = mapping.get(i).getOutgoingLinks();
+				if (ogIndexes.size() == 0){
+					matrix.get(i).add( ((1.0/length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
+				}else{
+					matrix.get(i).add( ogIndexes.contains(mapping.get(j)) ? ( ((1.0/ogIndexes.size()) * (1.0-ALPHA)) + (ALPHA/length)) : (ALPHA/length));
+				}
+			}
+		}
 	}
 }
