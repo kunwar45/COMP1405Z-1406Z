@@ -1,8 +1,10 @@
 package course.project;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class Crawler {
 	private static HashMap<Link, Integer> data = new HashMap<Link, Integer>();
@@ -10,7 +12,6 @@ public class Crawler {
 	public static int crawl(String seed){
 		ImprovedQueue queue = new ImprovedQueue(new Link(seed));
 		Link url = queue.removestart();
-//		System.out.println(url.getIncomingLinks().isem);
 
 		int count = 1;
 		while (true) {
@@ -28,19 +29,17 @@ public class Crawler {
 
 			url = queue.removestart();
 			count+=1;
-
-
 		}
-		//Gets the mapping of the urls to the numbers as well as the pageranks, O(n^3)
-		//    pageRanks,mapping = createPageRanks(data)
 
-		//Adds the pageranks to the dictionary
-		//    for rank in range(len(pageRanks)):
-		//        data[mapping[rank]]["pageRank"] = pageRanks[rank]
+		ArrayList<Object> pageRankResult = createPageRanks();
+		ArrayList<Double> pageRanks = (ArrayList<Double>) pageRankResult.get(0);
+		ArrayList<Link> mapping = (ArrayList<Link>) pageRankResult.get(1);
 
-		//Creates all the files for searchdata.py to use
-		//    createFiles(data,IDFs)
+		for (int i = 0; i < mapping.size(); i++) {
+			mapping.get(i).setPageRank(pageRanks.get(i));
+		}
 
+		createFiles();
 		return count;
 	}
 
@@ -58,7 +57,7 @@ public class Crawler {
 		}
 
 		for (String s: parsed.split("/n")){
-			System.out.println(s);
+//			System.out.println(s);
 
 		}
 
@@ -66,7 +65,129 @@ public class Crawler {
 		return data;
 	}
 
-	public double getIdf(String word, Integer totalUrls){
+	public static void createFiles(){
+		File file = new File("pages");
+		if (file.exists()){
+			deleteFolder(file);
+		}
+		file.mkdir();
+
+		file = new File("IDFs");
+		if (file.exists()){
+			deleteFolder(file);
+		}
+		file.mkdir();
+
+		for (Link l: data.keySet()){
+			String path = l.getUrl().replace("/", "{").replace(":", "}").replace('.','(');
+			file = new File("pages" + File.separator + path);
+			file.mkdir();
+
+			try {
+				FileOutputStream out;
+				out = new FileOutputStream("pages" + File.separator + path + File.separator + "outgoinglinks.txt");
+				for (Link outgoingLink : l.getOutgoingLinks()) {
+					out.write(' ');
+					for (char c : outgoingLink.getUrl().toCharArray()) {
+						out.write(c);
+					}
+				}
+				out.close();
+
+				out = new FileOutputStream("pages" + File.separator + path + File.separator + "incominglinks.txt");
+				for (Link incominglink : l.getIncomingLinks()) {
+					out.write(' ');
+					for (char c : incominglink.getUrl().toCharArray()) {
+						out.write(c);
+					}
+				}
+				out.close();
+
+				// Writes the word count, tf and the tfidf for each word in the url, and also wrties the idfs for each word
+				file = new File("pages" + File.separator + path + File.separator + "countAll");
+				file.mkdir();
+				HashMap<String,Integer> countAll = l.getCountAll();
+				for (String word : countAll.keySet()) {
+					out = new FileOutputStream("pages" + File.separator + path + File.separator + "countAll" + File.separator + word + ".txt");
+					for (char c : (""+countAll.get(word)).toCharArray()) {
+						out.write(c);
+					}
+					out.write(' ');
+
+					for (char c :(""+getTfIdf(l,word)).toCharArray() ){
+						out.write(c);
+					}
+					out.write(' ');
+
+					for (char c :(""+getTf(l,word)).toCharArray() ){
+						out.write(c);
+					}
+					out.close();
+
+					file = new File("IDFs" + File.separator + word + ".txt");
+					if (!file.exists()) {
+						out = new FileOutputStream("IDFs" + File.separator + word + ".txt");
+						for (char c : (""+getIdf(word, data.size())).toCharArray()) {
+							out.write(c);
+						}
+						out.close();
+					}
+
+				}
+
+				out = new FileOutputStream("pages" + File.separator + path + File.separator + "wordCount.txt");
+				for (char c : (""+l.getWordCount()).toCharArray()) {
+					out.write(c);
+				}
+				out.close();
+
+				out = new FileOutputStream("pages" + File.separator + path + File.separator + "pageRank.txt");
+				for (char c : (""+l.getPageRank()).toCharArray()) {
+					out.write(c);
+				}
+				out.close();
+
+				out = new FileOutputStream("pages" + File.separator + path + File.separator + "title.txt");
+				for (char c : (""+l.getTitle()).toCharArray()) {
+					out.write(c);
+				}
+				out.close();
+
+			} catch (FileNotFoundException e) {
+				System.out.println("" + l.getUrl() + " Not found");
+			} catch (IOException e){
+				System.out.println("" + l.getUrl() + " IOException");
+			}
+//
+//				Scanner in = new Scanner(new FileReader("resources" + File.separator + "myAccount2.txt"));
+//
+//				String name = in.nextLine();
+//				int acc = in.nextInt();
+//				float bal = in.nextFloat();
+//				aBankAccount = new BankAccount(name, bal, acc);
+//
+//				System.out.println(aBankAccount);
+//				in.close();
+//			} catch (FileNotFoundException e) {
+//				System.out.println("Error: Cannot open file for reading");
+//			} catch (NoSuchElementException e) {
+//				System.out.println("Error: EOF encountered, file may be corrupt");
+//			}
+		}
+	}
+
+	public static void deleteFolder(File file){
+		for (File f : file.listFiles()){
+			if (f.isDirectory()){
+				deleteFolder(f);
+			}else{
+				f.delete();
+			}
+		}
+		file.delete();
+	}
+
+	public static double getIdf(String word, Integer totalUrls){
 		double counter;
 		if (IDFs.containsKey(word)){
 			counter = IDFs.get(word);
@@ -76,7 +197,7 @@ public class Crawler {
 		return log2((double)totalUrls/(1+counter));
 	}
 
-	public double getTf(Link url, String word){
+	public static double getTf(Link url, String word){
 		if (!data.containsKey(url)){
 			return 0.0;
 		}
@@ -86,11 +207,11 @@ public class Crawler {
 		return 0.0;
 	}
 
-	public double getTfIdf(Link url, String word){
+	public static double getTfIdf(Link url, String word){
 		return log2(1.0 + getTf(url, word)) * getIdf(word, data.size());
 	}
 
-	public double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
+	public static double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
 		double sum = 0.0;
 		for(int i = 0; i < pi.size(); i++){
 			sum+= (double)pi.get(i) * (double)b.get(i);
@@ -106,7 +227,7 @@ public class Crawler {
 		return Math.log(lognum) / Math.log(2);
 	}
 
-	public ArrayList<Object> createPageRanks(){
+	public static ArrayList<Object> createPageRanks(){
 		double ALPHA = 0.1;
 		double DISTANCE_THRESHOLD = 0.0001;
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
@@ -154,7 +275,7 @@ public class Crawler {
 
 	}
 
-	public ArrayList<ArrayList<Double>> multScalar(ArrayList<ArrayList<Double>> matrix, double scale){
+	public static ArrayList<ArrayList<Double>> multScalar(ArrayList<ArrayList<Double>> matrix, double scale){
 		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
 		for (int i = 0; i < matrix.size(); i++){
 			for (int j = 0; j <matrix.size(); j++){
@@ -164,7 +285,7 @@ public class Crawler {
 		return resultMatrix;
 	}
 
-	public ArrayList<ArrayList<Double>> multMatrix(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
+	public static ArrayList<ArrayList<Double>> multMatrix(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
 		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
 		if ((a.size() != b.get(0).size()) && (b.size()!= a.get(0).size())){
 			return null;
@@ -182,7 +303,7 @@ public class Crawler {
 		return resultMatrix;
 	}
 
-	public double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
+	public static double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
 		double sum = 0;
 		for (int i = 0; i < a.size(); i++){
 			sum += Math.pow(a.get(i)- b.get(i),2);

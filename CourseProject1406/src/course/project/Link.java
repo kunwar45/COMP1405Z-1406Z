@@ -6,15 +6,20 @@ import java.util.HashMap;
 public class Link {
     private String url;
     // private ArrayList<Link> outgoingLinks = new ArrayList<Link>();
-    private ArrayList<Link> outgoingLinks = null;
-    private ArrayList<Link> incomingLinks = new ArrayList<Link>();
-    private HashMap<String, Integer> countAll = new HashMap<String, Integer>();
-    private String title = "";
+    private ArrayList<Link> outgoingLinks;
+    private ArrayList<Link> incomingLinks;
+    private HashMap<String, Integer> countAll;
+    private String title;
     private double pageRank;
-    private int wordCount = 0;
+    private int wordCount;
 
     Link(String url) {
         this.url = url;
+        outgoingLinks = null;
+        incomingLinks = new ArrayList<Link>();
+        countAll = new HashMap<String, Integer>();
+        title = "";
+        wordCount = 0;
     }
 
     @Override
