@@ -103,7 +103,7 @@ public class Crawler {
 				}
 				out.close();
 
-				// Writes the word count, tf and the tfidf for each word in the url, and also wrties the idfs for each word
+				// Writes the word count, tf and the tfidf for each word in the url, and also writes the idfs for each word
 				file = new File("pages" + File.separator + path + File.separator + "countAll");
 				file.mkdir();
 				HashMap<String,Integer> countAll = l.getCountAll();
