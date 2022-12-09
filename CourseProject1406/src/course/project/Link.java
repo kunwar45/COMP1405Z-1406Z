@@ -3,7 +3,7 @@ package course.project;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Link {
+public class Link implements Comparable<Link> {
     private String url;
     // private ArrayList<Link> outgoingLinks = new ArrayList<Link>();
     private ArrayList<Link> outgoingLinks;
@@ -12,14 +12,16 @@ public class Link {
     private String title;
     private double pageRank;
     private int wordCount;
+    private double cosineSim;
 
     Link(String url) {
-        this.url = url;
+        this.setUrl(url);
         outgoingLinks = null;
         incomingLinks = new ArrayList<Link>();
         countAll = new HashMap<String, Integer>();
         title = "";
         wordCount = 0;
+        cosineSim = 0;
     }
 
     @Override
@@ -59,6 +61,10 @@ public class Link {
         return wordCount;
     }
 
+    public double getCosineSim() {
+        return cosineSim;
+    }
+
     public void setCountAll(HashMap<String, Integer> countAll) {
         this.countAll = countAll;
     }
@@ -80,4 +86,23 @@ public class Link {
     }
 
     public void setWordCount(int wordCount) { this.wordCount = wordCount; }
+
+    public void setCosineSim(double cosineSim) {
+        this.cosineSim = cosineSim;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public int compareTo(Link l) {
+        if (this.getCosineSim() == l.getCosineSim()){
+            return this.getUrl().compareTo(l.getUrl());
+        }else if (this.getCosineSim() > l.getCosineSim()){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
 }
