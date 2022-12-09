@@ -2,3 +2,5 @@
 /Idfs
 /__pycache__
 /testing-resources
+*.class
+*.xml
