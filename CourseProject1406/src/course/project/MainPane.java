@@ -8,8 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class MainPane extends Pane {
-  //Constructor for our AddressPane
-  ///Takes a String, which represents the title of the pane (e.g., 'Contact Address')
+
   public MainPane(String title) {
     //Create an inner pane and set its style
     //This will hold all our components
@@ -26,11 +25,9 @@ public class MainPane extends Pane {
     label2.relocate(10, 55);
     label2.setPrefSize(120, 30);
 
-
-    
-    TextField nameField = new TextField();
-    nameField.relocate(150, 20);
-    nameField.setPrefSize(300, 30);
+    TextField searchField = new TextField();
+    searchField.relocate(150, 20);
+    searchField.setPrefSize(300, 30);
 
     RadioButton radio1 = new RadioButton("Yes");
     radio1.relocate(140, 55);
@@ -47,7 +44,7 @@ public class MainPane extends Pane {
 
     // Add all labels and textfields to the pane
     innerPane.getChildren().addAll(label1, label2,
-                                   nameField, radio1, radio2, b);
+            searchField, radio1, radio2, b);
     
     // Make a title for border and add it as well as inner pane to main pane
     Label titleLabel = new Label(); // Title to be placed onto border

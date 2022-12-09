@@ -31,6 +31,10 @@ public class Link {
                 '}';
     }
 
+    public String getRelativeLink() {
+        return this.url.substring(0, this.url.lastIndexOf('/'));
+    }
+
     public ArrayList<Link> getIncomingLinks() {
         return incomingLinks;
     }
@@ -63,8 +67,27 @@ public class Link {
         this.countAll = countAll;
     }
 
+    public void addCountAll(String s, Integer i) {
+        this.countAll.put(s, i);
+    }
+
+    public Integer getSpecificCountAll ( String s){
+        if (this.countAll.containsKey(s)){
+            return this.countAll.get(s);
+        }
+
+        return 0;
+    }
     public void setIncomingLinks(ArrayList<Link> incomingLinks) {
         this.incomingLinks = incomingLinks;
+    }
+
+    public void addIncomingLink(Link newLink){
+        this.incomingLinks.add(newLink);
+    }
+
+    public void addOutgoingLink(Link newLink){
+        this.outgoingLinks.add(newLink);
     }
 
     public void setOutgoingLinks(ArrayList<Link> outgoingLinks) {

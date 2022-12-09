@@ -22,7 +22,6 @@ public class Crawler {
 						queue.addend(outgoingLink);
 					}
 			}
-
 			if (queue.size() == 0) {
 				break;
 			}
@@ -56,12 +55,40 @@ public class Crawler {
 			e.printStackTrace();
 		}
 
-		for (String s: parsed.split("/n")){
-//			System.out.println(s);
+		String[] parsedArr = parsed.split("\n");
+//		System.out.println(parsed);
+//		System.out.println("The length of tedaf " + parsedArr.length);
+
+		for (String s : parsedArr){
+			if (s.contains("title")){
+
+				url.setTitle(s.substring(s.indexOf("<title>") + 7, s.indexOf("</title>")));
+			} else if (s.contains("href")){
+				Link outgoingLink;
+				if (s.contains("http")){
+					outgoingLink =  new Link(s.substring(s.indexOf("href") + 5, s.indexOf(">")));
+				} else {
+
+					outgoingLink = new Link(url.getRelativeLink()+s.substring(s.indexOf("./"), s.length()));
+				}
+				url.addOutgoingLink(outgoingLink);
+				outgoingLink.addIncomingLink(url);
+			} else if ((s.contains(">") && (!s.contains("<")))){
+				url.setWordCount(url.getWordCount() + 1);
+
+				url.addCountAll(s.substring(s.indexOf(">")), url.getSpecificCountAll(s)+1);
+
+			} else if ((s.contains("<") && (s.charAt(0) != '<'))){
+				url.setWordCount(url.getWordCount() + 1);
+
+				url.addCountAll(s.substring(0, s.indexOf(">")), url.getSpecificCountAll(s)+1);
+
+			} else if (!s.contains("<") && (!s.contains(">"))){
+				url.setWordCount(url.getWordCount() + 1);
+				url.addCountAll(s, url.getSpecificCountAll(s)+1);
+			}
 
 		}
-
-
 		return data;
 	}
 
