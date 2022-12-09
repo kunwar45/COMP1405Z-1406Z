@@ -1,8 +1,5 @@
 package course.project;
 
-import course.project.Crawler;
-import course.project.Link;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,50 +11,31 @@ public class Search {
 	private static HashMap<String, Integer> phraseUniques = new HashMap<>();
 	private static HashMap<String, Double> phraseIDFs = new HashMap<>();
 	private static ArrayList<Double> phraseVector = new ArrayList<>();
+	private static SearchData tester = new SearchData();
 	private static final DecimalFormat df = new DecimalFormat("0.000");
-	public static void search(String phrase, boolean boost){
+	public static List<SearchResult> search(String phrase, boolean boost, int X){
 
 		ArrayList<String> phraseWords = new ArrayList<String>(List.of(phrase.split(" ")));
-		ArrayList<Link> cosineSimilarities = new ArrayList<>();
 		File files = new File("pages");
+		TreeSet<Link> result = new TreeSet<>();
 
 		for (File f:files.listFiles()){
 			String url = f.getAbsolutePath();
 			ArrayList<Double> documentVector = new ArrayList<>();
 			for (String word: phraseUniques.keySet()){
-				documentVector.add(SearchData.get_tf_idf(url,word));
+				documentVector.add(tester.getTFIDF(url,word));
 			}
 			double sim= cosineSim(phraseVector,documentVector);
 			if (boost){
-				sim = sim*SearchData.get_page_rank(url);
+				sim = sim*tester.getPageRank(url);
 			}
 			Link link = new Link(url);
 			link.setCosineSim(Math.round(Double.parseDouble(df.format(sim))));
-
-			int insert = 0;
-			if (cosineSimilarities.get(0) != null){
-				for (int i=0;i<11;i++){
-					if (cosineSimilarities.get(i) == null){
-						cosineSimilarities.set(i, link);
-						break;
-					}else if (link.compareTo(cosineSimilarities.get(i))<0){
-						insert++;
-					}else if (insert == 10){
-						break;
-					}else{
-						cosineSimilarities.add(insert, link);
-						break;
-					}
-
-				}
-			}else{
-				cosineSimilarities.add(link);
-			}if (cosineSimilarities.size()>10){
-				cosineSimilarities.remove(10);
-			}
-			System.out.println(cosineSimilarities);
+			result.add(link);
+			System.out.println(result);
 		}
 
+		return result;
 
 	}
 
@@ -81,8 +59,9 @@ public class Search {
 	public void getPhraseVector(ArrayList<String> phraseWords){
 		ArrayList<Object> result = new ArrayList<>();
 
+
 		for (String word : phraseWords){
-			double idf = SearchData.get_idf(word);
+			double idf = tester.getIDF(word);
 			if (idf == 0){
 				while(phraseWords.remove(word)){
 
@@ -103,6 +82,6 @@ public class Search {
 	}
 
 	public static void main(String[] args) {
-		search("gang gang", true);
+		search("gang gang", true, 3);
 	}
 }
