@@ -1,6 +1,7 @@
 package course.project;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Link implements Comparable<Link> {
@@ -74,7 +75,7 @@ public class Link implements Comparable<Link> {
     }
 
     public void addCountAll(String s, Integer i) {
-        this.countAll.put(s, i);
+        this.countAll.putIfAbsent(s, i);
     }
 
     public Integer getSpecificCountAll ( String s){
@@ -89,7 +90,9 @@ public class Link implements Comparable<Link> {
     }
 
     public void addIncomingLink(Link newLink){
-        this.incomingLinks.add(newLink);
+//        if (!Arrays.asList(this.incomingLinks).contains(newLink)){
+            this.incomingLinks.add(newLink);
+//        }
     }
 
     public void addOutgoingLink(Link newLink){
