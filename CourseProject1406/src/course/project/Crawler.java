@@ -68,7 +68,7 @@ public class Crawler {
 					outgoingLink =  new Link(s.substring(s.indexOf("href") + 5, s.indexOf(">")));
 				} else {
 
-					outgoingLink = new Link(url.getRelativeLink()+s.substring(s.indexOf("./") + 2));
+					outgoingLink = new Link(url.getRelativeLink()+s.substring((s.indexOf("./") + 1), s.indexOf(">")-1));
 					System.out.println(outgoingLink.getUrl());
 				}
 				url.addOutgoingLink(outgoingLink);
