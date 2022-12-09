@@ -58,6 +58,7 @@ public class Crawler {
 //		System.out.println("The length of tedaf " + parsedArr.length);
 
 		for (String s : parsedArr){
+			System.out.println(s);
 			if (s.contains("title")){
 
 				url.setTitle(s.substring(s.indexOf("<title>") + 7, s.indexOf("</title>")));
@@ -67,7 +68,8 @@ public class Crawler {
 					outgoingLink =  new Link(s.substring(s.indexOf("href") + 5, s.indexOf(">")));
 				} else {
 
-					outgoingLink = new Link(url.getRelativeLink()+s.substring(s.indexOf("./"), s.length()));
+					outgoingLink = new Link(url.getRelativeLink()+s.substring(s.indexOf("./") + 2, s.length()));
+					System.out.println(outgoingLink.getUrl());
 				}
 				url.addOutgoingLink(outgoingLink);
 				outgoingLink.addIncomingLink(url);
