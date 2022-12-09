@@ -3,12 +3,10 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class Crawler {
-	private static HashMap<Link, Integer> data = new HashMap<Link, Integer>();
-	private static HashMap<String, Double> IDFs = new HashMap<String, Double>();
+	private static HashMap<Link, Integer> data = new HashMap<>();
+	private static HashMap<String, Double> IDFs = new HashMap<>();
 	public static int crawl(String seed){
 		ImprovedQueue queue = new ImprovedQueue(new Link(seed));
 		Link url = queue.removestart();
@@ -130,7 +128,7 @@ public class Crawler {
 				}
 				out.close();
 
-				// Writes the word count, tf and the tfidf for each word in the url, and also wrties the idfs for each word
+				// Writes the word count, tf and the tfidf for each word in the url, and also writes the idfs for each word
 				file = new File("pages" + File.separator + path + File.separator + "countAll");
 				file.mkdir();
 				HashMap<String,Integer> countAll = l.getCountAll();
@@ -241,7 +239,7 @@ public class Crawler {
 	public static double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
 		double sum = 0.0;
 		for(int i = 0; i < pi.size(); i++){
-			sum+= (double)pi.get(i) * (double)b.get(i);
+			sum+= pi.get(i) * b.get(i);
 		}
 		return sum;
 	}
@@ -257,8 +255,8 @@ public class Crawler {
 	public static ArrayList<Object> createPageRanks(){
 		double ALPHA = 0.1;
 		double DISTANCE_THRESHOLD = 0.0001;
-		ArrayList<ArrayList<Double>> matrix = new ArrayList<ArrayList<Double>>();
-		ArrayList<Link> mapping = new ArrayList<Link>(data.keySet());
+		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
+		ArrayList<Link> mapping = new ArrayList<>(data.keySet());
 
 		int length = mapping.size();
 
@@ -274,7 +272,7 @@ public class Crawler {
 			}
 		}
 
-		ArrayList<Double> pi = new ArrayList<Double>();
+		ArrayList<Double> pi = new ArrayList<>();
 		for (int i = 0; i <length;i++){
 			pi.add(1.0/length);
 		}
@@ -283,7 +281,7 @@ public class Crawler {
 		double count = 0;
 		while (euclideanDistance>=DISTANCE_THRESHOLD){
 			count++;
-			ArrayList<Double> newPi = new ArrayList<Double>();
+			ArrayList<Double> newPi = new ArrayList<>();
 			for (int i = 0; i < length;i++){
 				ArrayList<Double> cols = new ArrayList<>();
 				for (ArrayList<Double> j: matrix){
@@ -302,33 +300,33 @@ public class Crawler {
 
 	}
 
-	public static ArrayList<ArrayList<Double>> multScalar(ArrayList<ArrayList<Double>> matrix, double scale){
-		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
-		for (int i = 0; i < matrix.size(); i++){
-			for (int j = 0; j <matrix.size(); j++){
-				resultMatrix.get(i).set(j, matrix.get(i).get(j)*scale);
-			}
-		}
-		return resultMatrix;
-	}
+//	public static ArrayList<ArrayList<Double>> multScalar(ArrayList<ArrayList<Double>> matrix, double scale){
+//		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
+//		for (int i = 0; i < matrix.size(); i++){
+//			for (int j = 0; j <matrix.size(); j++){
+//				resultMatrix.get(i).set(j, matrix.get(i).get(j)*scale);
+//			}
+//		}
+//		return resultMatrix;
+//	}
 
-	public static ArrayList<ArrayList<Double>> multMatrix(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
-		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
-		if ((a.size() != b.get(0).size()) && (b.size()!= a.get(0).size())){
-			return null;
-		}
-		double dotProduct = 0;
-		for (int row = 0; row < a.size(); row++){
-			for (int col = 0; col < b.get(0).size(); col++){
-				for (int element = 0; element < a.get(row).size(); element++){
-					dotProduct += a.get(row).get(element) * b.get(element).get(col);
-				}
-				resultMatrix.get(row).set(col,dotProduct);
-				dotProduct = 0;
-			}
-		}
-		return resultMatrix;
-	}
+//	public static ArrayList<ArrayList<Double>> multMatrix(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
+//		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
+//		if ((a.size() != b.get(0).size()) && (b.size()!= a.get(0).size())){
+//			return null;
+//		}
+//		double dotProduct = 0;
+//		for (int row = 0; row < a.size(); row++){
+//			for (int col = 0; col < b.get(0).size(); col++){
+//				for (int element = 0; element < a.get(row).size(); element++){
+//					dotProduct += a.get(row).get(element) * b.get(element).get(col);
+//				}
+//				resultMatrix.get(row).set(col,dotProduct);
+//				dotProduct = 0;
+//			}
+//		}
+//		return resultMatrix;
+//	}
 
 	public static double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
 		double sum = 0;
