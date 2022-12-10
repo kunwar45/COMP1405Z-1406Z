@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchData implements ProjectTester {
@@ -53,7 +54,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public double getIDF(String word) {
-		String path = "IDFs" + File.separator + word;
+		String path = "IDFs" + File.separator + word + ".txt";
 		File file = new File(path);
 		if (file.exists()){
 			return Double.parseDouble(readFile(path));
@@ -105,9 +106,8 @@ public class SearchData implements ProjectTester {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-		System.out.println(readFile("pages" + File.separator + "http}{{people(scs(carleton(ca{~davidmckenney{fruits{N-0(html" + File.separator + "pageRank.txt"));
-	}
+//	public static void main(String[] args) {
+//		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
+//	}
 
 }

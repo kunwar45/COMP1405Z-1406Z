@@ -90,9 +90,9 @@ public class Link implements Comparable<Link>, SearchResult{
     }
 
     public void addIncomingLink(Link newLink){
-//        if (!Arrays.asList(this.incomingLinks).contains(newLink)){
+        if (!Arrays.asList(this.incomingLinks).contains(newLink)){
             this.incomingLinks.add(newLink);
-//        }
+        }
     }
 
     public void addOutgoingLink(Link newLink){

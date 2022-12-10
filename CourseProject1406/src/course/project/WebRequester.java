@@ -15,6 +15,7 @@ public class WebRequester {
 		while (currentLine != null) {
 			response.append(currentLine + "\n");
 			currentLine = reader.readLine();
+			//
 		}
 		return response.toString();
 	}

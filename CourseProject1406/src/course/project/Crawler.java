@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Crawler {
-	private static HashMap<Link, Integer> data = new HashMap<>();
+	private static HashMap<String,Link> data = new HashMap<>();
 	private static HashMap<String, Double> IDFs = new HashMap<>();
 	public static int crawl(String seed){
 		ImprovedQueue queue = new ImprovedQueue(new Link(seed));
@@ -14,15 +14,21 @@ public class Crawler {
 
 		int count = 1;
 		while (true) {
-			System.out.println(queue);
+//			System.out.println(queue);
 			parse(url);
 
 			for (Link outgoingLink: url.getOutgoingLinks()) {
-				System.out.println(outgoingLink);
-				if (!queue.contains(outgoingLink) && outgoingLink.getOutgoingLinks() == null){
+//				System.out.println(outgoingLink);
+				if (!queue.contains(outgoingLink) && data.get(outgoingLink.getUrl()).getOutgoingLinks()==null ) {
 					queue.addend(outgoingLink);
 				}
 			}
+
+			for (String word: url.getCountAll().keySet()){
+				IDFs.putIfAbsent(word,0.0);
+				IDFs.replace(word,IDFs.get(word)+1);
+			}
+
 			if (queue.size() == 0) {
 				break;
 			}
@@ -30,14 +36,6 @@ public class Crawler {
 			url = queue.removestart();
 			count+=1;
 
-			for (String word: url.getCountAll().keySet()){
-				if (IDFs.containsKey(word)){
-					IDFs.put(word, IDFs.get(word)+1);
-				} else {
-					IDFs.put(word, 1.0);
-				}
-
-			}
 		}
 
 		ArrayList<Object> pageRankResult = createPageRanks();
@@ -53,7 +51,7 @@ public class Crawler {
 	}
 
 	public static void parse(Link url){
-		data.putIfAbsent(url, 1);
+		data.putIfAbsent(url.getUrl(), url);
 		url.setOutgoingLinks(new ArrayList<Link>());
 		String parsed = "";
 		try {
@@ -81,10 +79,17 @@ public class Crawler {
 				} else {
 
 					outgoingLink = new Link(url.getRelativeLink()+s.substring((s.indexOf("./") + 1), s.indexOf(">")-1));
-					System.out.println(outgoingLink.getUrl());
+//					System.out.println(outgoingLink.getUrl());
 				}
 				url.addOutgoingLink(outgoingLink);
-				outgoingLink.addIncomingLink(url);
+				data.putIfAbsent(outgoingLink.getUrl(), outgoingLink);
+				data.get(outgoingLink.getUrl()).addIncomingLink(url);
+//
+//				System.out.println(outgoingLink);
+//				for (Link l: data.get(outgoingLink.getUrl()).getIncomingLinks()) {
+//					System.out.println(l);
+//				}
+//				System.out.println();
 			} else if ((s.contains(">") && (!s.contains("<")))){
 				url.setWordCount(url.getWordCount() + 1);
 
@@ -116,7 +121,7 @@ public class Crawler {
 		}
 		file.mkdir();
 
-		for (Link l: data.keySet()){
+		for (Link l: data.values()){
 			String path = l.getUrl().replace("/", "{").replace(":", "}").replace('.','(');
 			file = new File("pages" + File.separator + path);
 			file.mkdir();
@@ -125,19 +130,19 @@ public class Crawler {
 				FileOutputStream out;
 				out = new FileOutputStream("pages" + File.separator + path + File.separator + "outgoinglinks.txt");
 				for (Link outgoingLink : l.getOutgoingLinks()) {
-					out.write(' ');
 					for (char c : outgoingLink.getUrl().toCharArray()) {
 						out.write(c);
 					}
+					out.write(' ');
 				}
 				out.close();
 
 				out = new FileOutputStream("pages" + File.separator + path + File.separator + "incominglinks.txt");
 				for (Link incominglink : l.getIncomingLinks()) {
-					out.write(' ');
 					for (char c : incominglink.getUrl().toCharArray()) {
 						out.write(c);
 					}
+					out.write(' ');
 				}
 				out.close();
 
@@ -236,7 +241,7 @@ public class Crawler {
 	}
 
 	public static double getTf(Link url, String word){
-		if (!data.containsKey(url)){
+		if (!data.containsKey(url.getUrl())){
 			return 0.0;
 		}
 		if (url.getCountAll().containsKey(word)){
@@ -257,9 +262,9 @@ public class Crawler {
 		return sum;
 	}
 
-	public static void main(String[] args) {
-		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-	}
+//	public static void main(String[] args) {
+//		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
+//	}
 
 	public static double log2(double lognum){
 		return Math.log(lognum) / Math.log(2);
@@ -269,7 +274,7 @@ public class Crawler {
 		double ALPHA = 0.1;
 		double DISTANCE_THRESHOLD = 0.0001;
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
-		ArrayList<Link> mapping = new ArrayList<>(data.keySet());
+		ArrayList<Link> mapping = new ArrayList<>(data.values());
 
 		int length = mapping.size();
 
