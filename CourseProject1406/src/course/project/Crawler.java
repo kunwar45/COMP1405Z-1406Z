@@ -31,7 +31,12 @@ public class Crawler {
 			count+=1;
 
 			for (String word: url.getCountAll().keySet()){
-				IDFs.putIfAbsent(word, IDFs.get(word)+1);
+				if (IDFs.containsKey(word)){
+					IDFs.put(word, IDFs.get(word)+1);
+				} else {
+					IDFs.put(word, 1.0);
+				}
+
 			}
 		}
 
