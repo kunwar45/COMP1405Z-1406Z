@@ -29,6 +29,10 @@ public class Crawler {
 
 			url = queue.removestart();
 			count+=1;
+
+			for (String word: url.getCountAll().keySet()){
+				IDFs.putIfAbsent(word, IDFs.get(word)+1);
+			}
 		}
 
 		ArrayList<Object> pageRankResult = createPageRanks();
