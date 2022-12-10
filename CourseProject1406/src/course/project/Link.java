@@ -76,6 +76,7 @@ public class Link implements Comparable<Link>, SearchResult{
 
     public void addCountAll(String s, Integer i) {
         this.countAll.putIfAbsent(s, i);
+        this.countAll.replace(s, i);
     }
 
     public Integer getSpecificCountAll ( String s){
