@@ -106,7 +106,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public static void main(String[] args) {
-		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
 		System.out.println(readFile("pages" + File.separator + "http}{{people(scs(carleton(ca{~davidmckenney{fruits{N-0(html" + File.separator + "pageRank.txt"));
 	}
 

@@ -1,4 +1,5 @@
 package course.project;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -13,12 +14,14 @@ public class Crawler {
 
 		int count = 1;
 		while (true) {
-			data = parse(url);
+			System.out.println(queue);
+			parse(url);
 
 			for (Link outgoingLink: url.getOutgoingLinks()) {
-					if (!queue.contains(outgoingLink) && outgoingLink.getOutgoingLinks() == null){
-						queue.addend(outgoingLink);
-					}
+				System.out.println(outgoingLink);
+				if (!queue.contains(outgoingLink) && outgoingLink.getOutgoingLinks() == null){
+					queue.addend(outgoingLink);
+				}
 			}
 			if (queue.size() == 0) {
 				break;
@@ -40,12 +43,12 @@ public class Crawler {
 		return count;
 	}
 
-	public static HashMap<Link, Integer> parse(Link url){
+	public static void parse(Link url){
 		data.putIfAbsent(url, 1);
 		url.setOutgoingLinks(new ArrayList<Link>());
 		String parsed = "";
 		try {
-			parsed = WebRequester.readURL("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+			parsed = WebRequester.readURL(url.getUrl());
 //			System.out.println(parsed);
 		}catch(MalformedURLException e){
 			e.printStackTrace();
@@ -58,7 +61,7 @@ public class Crawler {
 //		System.out.println("The length of tedaf " + parsedArr.length);
 
 		for (String s : parsedArr){
-			System.out.println(s);
+//			System.out.println(s);
 			if (s.contains("title")){
 
 				url.setTitle(s.substring(s.indexOf("<title>") + 7, s.indexOf("</title>")));
@@ -89,7 +92,6 @@ public class Crawler {
 			}
 
 		}
-		return data;
 	}
 
 	public static void createFiles(){
@@ -247,7 +249,7 @@ public class Crawler {
 	}
 
 	public static void main(String[] args) {
-		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
 	}
 
 	public static double log2(double lognum){
@@ -301,35 +303,6 @@ public class Crawler {
 		return result;
 
 	}
-
-//	public static ArrayList<ArrayList<Double>> multScalar(ArrayList<ArrayList<Double>> matrix, double scale){
-//		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
-//		for (int i = 0; i < matrix.size(); i++){
-//			for (int j = 0; j <matrix.size(); j++){
-//				resultMatrix.get(i).set(j, matrix.get(i).get(j)*scale);
-//			}
-//		}
-//		return resultMatrix;
-//	}
-
-//	public static ArrayList<ArrayList<Double>> multMatrix(ArrayList<ArrayList<Double>> a, ArrayList<ArrayList<Double>> b){
-//		ArrayList<ArrayList<Double>> resultMatrix = new ArrayList<>();
-//		if ((a.size() != b.get(0).size()) && (b.size()!= a.get(0).size())){
-//			return null;
-//		}
-//		double dotProduct = 0;
-//		for (int row = 0; row < a.size(); row++){
-//			for (int col = 0; col < b.get(0).size(); col++){
-//				for (int element = 0; element < a.get(row).size(); element++){
-//					dotProduct += a.get(row).get(element) * b.get(element).get(col);
-//				}
-//				resultMatrix.get(row).set(col,dotProduct);
-//				dotProduct = 0;
-//			}
-//		}
-//		return resultMatrix;
-//	}
-
 	public static double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
 		double sum = 0;
 		for (int i = 0; i < a.size(); i++){

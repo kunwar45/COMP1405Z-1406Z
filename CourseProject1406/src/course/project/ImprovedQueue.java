@@ -1,11 +1,14 @@
 package course.project;
 
+import course.project.Link;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ImprovedQueue {
     ArrayList<Link> queueList = new ArrayList<Link>();
-    HashMap<Link, Integer> queueDict = new HashMap<Link, Integer>();
+    HashMap<String, Link> queueDict = new HashMap<String, Link>();
+    //
 
     ImprovedQueue(Link initialLink) {
         this.addend(initialLink);
@@ -13,17 +16,17 @@ public class ImprovedQueue {
 
     public void addend(Link l) {
         queueList.add(l);
-        queueDict.put(l, 1);
+        queueDict.put(l.getUrl(), l);
     }
 
     public Link removestart() {
         Link l = queueList.remove(0);
-        queueDict.remove(l);
+        queueDict.remove(l.getUrl());
         return l;
     }
 
     public boolean contains(Link l) {
-        return queueDict.containsKey(l);
+        return queueDict.containsKey(l.getUrl());
     }
 
     public int size() {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Link implements Comparable<Link> {
+public class Link implements Comparable<Link>, SearchResult{
     private String url;
     // private ArrayList<Link> outgoingLinks = new ArrayList<Link>();
     private ArrayList<Link> outgoingLinks;
@@ -13,7 +13,7 @@ public class Link implements Comparable<Link> {
     private String title;
     private double pageRank;
     private int wordCount;
-    private double cosineSim;
+    private double score;
 
     Link(String url) {
         this.setUrl(url);
@@ -22,7 +22,7 @@ public class Link implements Comparable<Link> {
         countAll = new HashMap<String, Integer>();
         title = "";
         wordCount = 0;
-        cosineSim = 0;
+        score = 0;
     }
 
     @Override
@@ -66,8 +66,8 @@ public class Link implements Comparable<Link> {
         return wordCount;
     }
 
-    public double getCosineSim() {
-        return cosineSim;
+    public double getScore() {
+        return score;
     }
 
     public void setCountAll(HashMap<String, Integer> countAll) {
@@ -113,8 +113,8 @@ public class Link implements Comparable<Link> {
 
     public void setWordCount(int wordCount) { this.wordCount = wordCount; }
 
-    public void setCosineSim(double cosineSim) {
-        this.cosineSim = cosineSim;
+    public void setScore(double score) {
+        this.score = score;
     }
 
     public void setUrl(String url) {
@@ -123,9 +123,12 @@ public class Link implements Comparable<Link> {
 
     @Override
     public int compareTo(Link l) {
-        if (this.getCosineSim() == l.getCosineSim()){
+        if (this.url.equals(l.getUrl())){
+            return 0;
+        }
+        if (this.getScore() == l.getScore()){
             return this.getUrl().compareTo(l.getUrl());
-        }else if (this.getCosineSim() > l.getCosineSim()){
+        }else if (this.getScore() > l.getScore()){
             return 1;
         }else{
             return -1;

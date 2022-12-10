@@ -30,12 +30,19 @@ public class Search {
 				sim = sim*tester.getPageRank(url);
 			}
 			Link link = new Link(url);
-			link.setCosineSim(Math.round(Double.parseDouble(df.format(sim))));
+			link.setScore(Math.round(Double.parseDouble(df.format(sim))));
+			if (result.size() == X+1){
+				result.remove(result.last());
+			}
 			result.add(link);
 			System.out.println(result);
 		}
+		ArrayList<SearchResult> searchResults = new ArrayList<>();
+		for (Link link : result){
+			searchResults.add((SearchResult)link);
+		}
 
-		return result;
+		return searchResults;
 
 	}
 
