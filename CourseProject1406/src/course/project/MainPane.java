@@ -1,13 +1,14 @@
 package course.project;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
+
 public class MainPane extends Pane {
+
+  private ListView<SearchResult> linkList;
 
   public MainPane(String title) {
     //Create an inner pane and set its style
@@ -34,6 +35,10 @@ public class MainPane extends Pane {
     RadioButton radio2 = new RadioButton("No");
     radio2.relocate(140, 75);
 
+    linkList = new ListView<SearchResult>();
+    linkList.relocate(10, 40);
+    linkList.setPrefSize(540,150);
+
     Button b = new Button("search");
 
     b.setText("Search");
@@ -44,7 +49,7 @@ public class MainPane extends Pane {
 
     // Add all labels and textfields to the pane
     innerPane.getChildren().addAll(label1, label2,
-            searchField, radio1, radio2, b);
+            searchField, radio1, radio2, b, linkList);
     
     // Make a title for border and add it as well as inner pane to main pane
     Label titleLabel = new Label(); // Title to be placed onto border
@@ -54,5 +59,20 @@ public class MainPane extends Pane {
                         "-fx-translate-x: 10;");
 
     getChildren().addAll(innerPane, titleLabel);
+  }
+
+  public void update(Search model, int selectedItem){
+    ArrayList<SearchResult> list;
+    list = model.getSearchResults();
+
+    linkList.getItems().clear();
+
+    for (int i =0; i<list.size();i++){
+      linkList.getItems().add(list.get(i));
+    }
+
+    linkList.getSelectionModel().select(selectedItem);
+
+
   }
 }
