@@ -1,19 +1,18 @@
 package course.project;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
-public class MainPane extends Pane {
+public class AppView extends Pane {
 
   private ListView<SearchResult> linkList;
   private SearchButtonPane searchButtonPane;
   private TextField searchField;
   private RadioButton radio1;
 
-  public MainPane(String title) {
+  public AppView(String title) {
     //Create an inner pane and set its style
     //This will hold all our components
     Pane innerPane = new Pane();
@@ -82,7 +81,6 @@ public class MainPane extends Pane {
     }
 
     linkList.getSelectionModel().select(selectedItem);
-
 
   }
 }

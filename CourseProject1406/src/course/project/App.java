@@ -15,7 +15,7 @@ public class App extends Application{
   public void start(Stage primaryStage){
 
     Search model = new Search();
-    MainPane view = new MainPane("Web Crawler");
+    AppView view = new AppView("Web Crawler");
     view.update(model, 0);
     view.relocate(10,10);
 
