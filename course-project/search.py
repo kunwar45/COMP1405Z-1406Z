@@ -100,5 +100,5 @@ def getPhraseVector(phraseWords):
     return phraseVector,phraseUniques
 
 #Uncomment this code and change what page you want to use and the query here. Then run search.py
-# crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html")
-# search("apple banana blueberry banana banana", False)
+crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html")
+search("apple banana blueberry banana banana", False)

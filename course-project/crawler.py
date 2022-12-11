@@ -254,6 +254,11 @@ def createPageRanks(data):
             else:
                 matrix[i].append( ((1/len(ogIndexes)) * (1-ALPHA)) + (ALPHA/length) if mapping[j] in ogIndexes else (ALPHA/length))
 
+    print("helekhfadjf")
+    for i in matrix:
+        print(i)
+        print("\n")
+
     pi = []
     for i in range(length):
         pi.append(1/length)
