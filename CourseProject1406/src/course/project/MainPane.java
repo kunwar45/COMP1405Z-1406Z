@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class MainPane extends Pane {
 
   private ListView<SearchResult> linkList;
+  private SearchButtonPane searchButtonPane;
+  private TextField searchField;
 
   public MainPane(String title) {
     //Create an inner pane and set its style
@@ -26,7 +28,7 @@ public class MainPane extends Pane {
     label2.relocate(10, 55);
     label2.setPrefSize(120, 30);
 
-    TextField searchField = new TextField();
+    searchField = new TextField();
     searchField.relocate(150, 20);
     searchField.setPrefSize(300, 30);
 
@@ -39,17 +41,15 @@ public class MainPane extends Pane {
     linkList.relocate(10, 40);
     linkList.setPrefSize(540,150);
 
-    Button b = new Button("search");
+    searchButtonPane = new SearchButtonPane();
+    searchButtonPane.relocate(250, 240);
+    searchButtonPane.setPrefSize(305,30);
 
-    b.setText("Search");
-    b.setAlignment(Pos.CENTER_LEFT);
-    b.setDisable(false);
-    b.relocate(60,200);
-    b.setPrefSize(100, 30);
+
 
     // Add all labels and textfields to the pane
     innerPane.getChildren().addAll(label1, label2,
-            searchField, radio1, radio2, b, linkList);
+            searchField, radio1, radio2, searchButtonPane, linkList);
     
     // Make a title for border and add it as well as inner pane to main pane
     Label titleLabel = new Label(); // Title to be placed onto border
@@ -59,6 +59,13 @@ public class MainPane extends Pane {
                         "-fx-translate-x: 10;");
 
     getChildren().addAll(innerPane, titleLabel);
+  }
+
+  public TextField getSearchField(){
+    return searchField;
+  }
+  public SearchButtonPane getSearchButtonPane() {
+    return searchButtonPane;
   }
 
   public void update(Search model, int selectedItem){

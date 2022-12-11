@@ -13,6 +13,8 @@ public class Search {
 	private static ArrayList<Double> phraseVector = new ArrayList<>();
 	private static SearchData tester = new SearchData();
 	private static final DecimalFormat df = new DecimalFormat("0.000");
+
+	private static ArrayList<SearchResult> searchResults;
 	public static List<SearchResult> search(String phrase, boolean boost, int X){
 
 		ArrayList<String> phraseWords = new ArrayList<String>(List.of(phrase.split(" ")));
@@ -37,7 +39,7 @@ public class Search {
 			result.add(link);
 			System.out.println(result);
 		}
-		ArrayList<SearchResult> searchResults = new ArrayList<>();
+		searchResults = new ArrayList<>();
 		for (Link link : result){
 			searchResults.add((SearchResult)link);
 		}
@@ -87,6 +89,11 @@ public class Search {
 		}
 
 	}
+
+	public ArrayList<SearchResult> getSearchResults(){
+		return this.searchResults;
+	}
+
 
 	public static void main(String[] args) {
 		search("gang gang", true, 3);
