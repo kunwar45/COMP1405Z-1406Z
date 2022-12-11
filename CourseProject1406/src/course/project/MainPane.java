@@ -11,6 +11,7 @@ public class MainPane extends Pane {
   private ListView<SearchResult> linkList;
   private SearchButtonPane searchButtonPane;
   private TextField searchField;
+  private RadioButton radio1;
 
   public MainPane(String title) {
     //Create an inner pane and set its style
@@ -32,10 +33,8 @@ public class MainPane extends Pane {
     searchField.relocate(150, 20);
     searchField.setPrefSize(300, 30);
 
-    RadioButton radio1 = new RadioButton("Yes");
+    radio1 = new RadioButton("Yes");
     radio1.relocate(140, 55);
-    RadioButton radio2 = new RadioButton("No");
-    radio2.relocate(140, 75);
 
     linkList = new ListView<SearchResult>();
     linkList.relocate(10, 40);
@@ -49,7 +48,7 @@ public class MainPane extends Pane {
 
     // Add all labels and textfields to the pane
     innerPane.getChildren().addAll(label1, label2,
-            searchField, radio1, radio2, searchButtonPane, linkList);
+            searchField, radio1, searchButtonPane, linkList);
     
     // Make a title for border and add it as well as inner pane to main pane
     Label titleLabel = new Label(); // Title to be placed onto border
@@ -59,6 +58,10 @@ public class MainPane extends Pane {
                         "-fx-translate-x: 10;");
 
     getChildren().addAll(innerPane, titleLabel);
+  }
+
+  public RadioButton getRadio1(){
+    return radio1;
   }
 
   public TextField getSearchField(){

@@ -29,7 +29,7 @@ public class App extends Application{
     view.getSearchButtonPane().getSearchButton().setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent actionEvent) {
-        model.search(view.getSearchField().getText(), false, 10);
+        model.search(view.getSearchField().getText(), view.getRadio1().isSelected(), 10);
         view.update(model, 0);
       }
     });
