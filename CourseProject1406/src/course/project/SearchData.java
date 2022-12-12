@@ -97,7 +97,8 @@ public class SearchData implements ProjectTester {
 	}
 
 	public List<SearchResult> search(String query, boolean boost, int X) {
-		return Search.search(query, boost,X);
+		Search search = new Search();
+		return search.search(query, boost,X);
 	}
 
 	public static String readFile(String path){
