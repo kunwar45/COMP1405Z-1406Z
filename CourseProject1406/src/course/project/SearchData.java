@@ -24,7 +24,8 @@ public class SearchData implements ProjectTester {
 	}
 
 	public void crawl(String seedURL){
-		Crawler.crawl(seedURL);
+		Crawler crawler = new Crawler();
+		crawler.crawl(seedURL);
 	}
 
 	public List<String> getOutgoingLinks(String URL){

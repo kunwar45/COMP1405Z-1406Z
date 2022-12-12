@@ -59,7 +59,8 @@ public class Search {
 		if (eNormA == 0 || eNormB == 0) {
 			return 0;
 		}
-		return Crawler.dotProduct(a, b) / (eNormA * eNormB);
+		Crawler crawler = new Crawler();
+		return crawler.dotProduct(a, b) / (eNormA * eNormB);
 	}
 
 	public double euclideanNorm(ArrayList<Double> a) {
@@ -75,6 +76,7 @@ public class Search {
 		HashMap<String, Double> phraseIDFs = new HashMap<>();
 		ArrayList<Double> phraseVector = new ArrayList<>();
 		ArrayList<Object> result = new ArrayList<>();
+		Crawler crawler = new Crawler();
 		SearchData tester = new SearchData();
 
 		for (int wordIndex = 0; wordIndex < phraseWords.size(); wordIndex++) {
@@ -92,7 +94,7 @@ public class Search {
 		}
 		for (String word : phraseUniques.keySet()) {
 			double tf = (double) phraseUniques.get(word) / phraseUniques.size();
-			phraseVector.add(Crawler.log2(1 + tf) * phraseIDFs.get(word));
+			phraseVector.add(crawler.log2(1 + tf) * phraseIDFs.get(word));
 		}
 		ArrayList<Object> details = new ArrayList<Object>();
 		details.add(phraseUniques);
