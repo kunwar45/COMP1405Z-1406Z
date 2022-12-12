@@ -9,12 +9,12 @@ import javafx.scene.layout.Pane;
 
 public class App extends Application{
 
-  Search model;
+  SearchData model;
 
-  public App() {model = new Search();}
+  public App() {model = new SearchData();}
   public void start(Stage primaryStage){
 
-    Search model = new Search();
+    model = new SearchData();
     AppView view = new AppView("Web Crawler");
     view.update(model, 0);
     view.relocate(10,10);

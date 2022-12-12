@@ -9,6 +9,8 @@ import java.util.List;
 
 public class SearchData implements ProjectTester {
 
+	private List<SearchResult> searchResults;
+
 	public void initialize(){
 
 	}
@@ -87,7 +89,12 @@ public class SearchData implements ProjectTester {
 	}
 
 	public List<SearchResult> search(String query, boolean boost, int X) {
-		return Search.search(query, boost,X);
+		searchResults = Search.search(query, boost,X);
+		return searchResults;
+	}
+
+	public List<SearchResult> getSearchResults(){
+		return searchResults;
 	}
 
 	public static String readFile(String path){

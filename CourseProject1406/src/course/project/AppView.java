@@ -4,6 +4,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppView extends Pane {
 
@@ -70,8 +71,8 @@ public class AppView extends Pane {
     return searchButtonPane;
   }
 
-  public void update(Search model, int selectedItem){
-    ArrayList<SearchResult> list;
+  public void update(SearchData model, int selectedItem){
+    List<SearchResult> list;
     list = model.getSearchResults();
 
     linkList.getItems().clear();
