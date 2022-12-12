@@ -12,11 +12,22 @@ public class SearchData implements ProjectTester {
 	private List<SearchResult> searchResults;
 
 	public void initialize(){
+		File file = new File("pages");
+		if (file.exists()){
+			Crawler.deleteFolder(file);
+		}
+		file.mkdir();
 
+		file = new File("IDFs");
+		if (file.exists()){
+			Crawler.deleteFolder(file);
+		}
+		file.mkdir();
 	}
 
 	public void crawl(String seedURL){
-		Crawler.crawl(seedURL);
+		Crawler crawler = new Crawler();
+		crawler.crawl(seedURL);
 	}
 
 	public List<String> getOutgoingLinks(String URL){
@@ -89,12 +100,17 @@ public class SearchData implements ProjectTester {
 	}
 
 	public List<SearchResult> search(String query, boolean boost, int X) {
+<<<<<<< HEAD
 		searchResults = Search.search(query, boost,X);
 		return searchResults;
 	}
 
 	public List<SearchResult> getSearchResults(){
 		return searchResults;
+=======
+		Search search = new Search();
+		return search.search(query, boost,X);
+>>>>>>> fa53e93fae789fb8c72556eb8406fc7de3dbc924
 	}
 
 	public static String readFile(String path){
@@ -113,8 +129,11 @@ public class SearchData implements ProjectTester {
 		return result;
 	}
 
-//	public static void main(String[] args) {
-//		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-//	}
+	public static void main(String[] args) {
+		SearchData tester = new SearchData();
+//		tester.initialize();
+//		tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+		tester.search("peach pear coconut peach apple", false, 10);
+	}
 
 }

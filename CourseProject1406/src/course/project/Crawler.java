@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Crawler {
-	private static HashMap<String,Link> data = new HashMap<>();
-	private static HashMap<String, Double> IDFs = new HashMap<>();
-	public static int crawl(String seed){
+	private HashMap<String,Link> data = new HashMap<>();
+	private HashMap<String, Double> IDFs = new HashMap<>();
+	public int crawl(String seed){
 		ImprovedQueue queue = new ImprovedQueue(new Link(seed));
 		Link url = queue.removestart();
 
@@ -50,7 +50,7 @@ public class Crawler {
 		return count;
 	}
 
-	public static void parse(Link url){
+	public void parse(Link url){
 		data.putIfAbsent(url.getUrl(), url);
 		url.setOutgoingLinks(new ArrayList<Link>());
 		String parsed = "";
@@ -108,22 +108,10 @@ public class Crawler {
 		}
 	}
 
-	public static void createFiles(){
-		File file = new File("pages");
-		if (file.exists()){
-			deleteFolder(file);
-		}
-		file.mkdir();
-
-		file = new File("IDFs");
-		if (file.exists()){
-			deleteFolder(file);
-		}
-		file.mkdir();
-
+	public void createFiles(){
 		for (Link l: data.values()){
 			String path = l.getUrl().replace("/", "{").replace(":", "}").replace('.','(');
-			file = new File("pages" + File.separator + path);
+			File file = new File("pages" + File.separator + path);
 			file.mkdir();
 
 			try {
@@ -230,7 +218,7 @@ public class Crawler {
 		file.delete();
 	}
 
-	public static double getIdf(String word, Integer totalUrls){
+	public double getIdf(String word, Integer totalUrls){
 		double counter;
 		if (IDFs.containsKey(word)){
 			counter = IDFs.get(word);
@@ -240,7 +228,7 @@ public class Crawler {
 		return log2((double)totalUrls/(1+counter));
 	}
 
-	public static double getTf(Link url, String word){
+	public double getTf(Link url, String word){
 		if (!data.containsKey(url.getUrl())){
 			return 0.0;
 		}
@@ -250,11 +238,11 @@ public class Crawler {
 		return 0.0;
 	}
 
-	public static double getTfIdf(Link url, String word){
+	public double getTfIdf(Link url, String word){
 		return log2(1.0 + getTf(url, word)) * getIdf(word, data.size());
 	}
 
-	public static double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
+	public double dotProduct(ArrayList<Double> pi, ArrayList<Double> b){
 		double sum = 0.0;
 		for(int i = 0; i < pi.size(); i++){
 			sum+= pi.get(i) * b.get(i);
@@ -266,26 +254,34 @@ public class Crawler {
 //		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
 //	}
 
-	public static double log2(double lognum){
+	public double log2(double lognum){
 		return Math.log(lognum) / Math.log(2);
 	}
 
-	public static ArrayList<Object> createPageRanks(){
+	public ArrayList<Object> createPageRanks(){
 		double ALPHA = 0.1;
 		double DISTANCE_THRESHOLD = 0.0001;
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
 		ArrayList<Link> mapping = new ArrayList<>(data.values());
+//		System.out.println(mapping);
 
 		int length = mapping.size();
 
 		for (int i = 0; i < length; i++){
 			matrix.add(new ArrayList<Double>());
 			for (int j = 0; j <length; j++){
-				ArrayList<Link> ogIndexes = mapping.get(i).getOutgoingLinks();
+				HashMap<String,Link> ogIndexes = new HashMap<>();
+				for (Link l:data.get(mapping.get(i).getUrl()).getOutgoingLinks()){
+					ogIndexes.put(l.getUrl(), l);
+				}
 				if (ogIndexes.size() == 0){
-					matrix.get(i).add( ((1.0/length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
+					matrix.get(i).add( ((1.0/(double)length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
 				}else{
-					matrix.get(i).add( ogIndexes.contains(mapping.get(j)) ? ( ((1.0/ogIndexes.size()) * (1.0-ALPHA)) + (ALPHA/length)) : (ALPHA/length));
+					if (ogIndexes.containsKey(mapping.get(j).getUrl())){
+						matrix.get(i).add( ((1.0/ogIndexes.size()) * (1.0-ALPHA)) + (ALPHA/length));
+					}else{
+						matrix.get(i).add((ALPHA/length));
+					}
 				}
 			}
 		}
@@ -317,7 +313,7 @@ public class Crawler {
 		return result;
 
 	}
-	public static double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
+	public double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
 		double sum = 0;
 		for (int i = 0; i < a.size(); i++){
 			sum += Math.pow(a.get(i)- b.get(i),2);
