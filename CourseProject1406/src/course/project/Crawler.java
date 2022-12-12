@@ -109,21 +109,9 @@ public class Crawler {
 	}
 
 	public static void createFiles(){
-		File file = new File("pages");
-		if (file.exists()){
-			deleteFolder(file);
-		}
-		file.mkdir();
-
-		file = new File("IDFs");
-		if (file.exists()){
-			deleteFolder(file);
-		}
-		file.mkdir();
-
 		for (Link l: data.values()){
 			String path = l.getUrl().replace("/", "{").replace(":", "}").replace('.','(');
-			file = new File("pages" + File.separator + path);
+			File file = new File("pages" + File.separator + path);
 			file.mkdir();
 
 			try {
@@ -275,17 +263,25 @@ public class Crawler {
 		double DISTANCE_THRESHOLD = 0.0001;
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
 		ArrayList<Link> mapping = new ArrayList<>(data.values());
+//		System.out.println(mapping);
 
 		int length = mapping.size();
 
 		for (int i = 0; i < length; i++){
 			matrix.add(new ArrayList<Double>());
 			for (int j = 0; j <length; j++){
-				ArrayList<Link> ogIndexes = mapping.get(i).getOutgoingLinks();
+				HashMap<String,Link> ogIndexes = new HashMap<>();
+				for (Link l:data.get(mapping.get(i).getUrl()).getOutgoingLinks()){
+					ogIndexes.put(l.getUrl(), l);
+				}
 				if (ogIndexes.size() == 0){
-					matrix.get(i).add( ((1.0/length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
+					matrix.get(i).add( ((1.0/(double)length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
 				}else{
-					matrix.get(i).add( ogIndexes.contains(mapping.get(j)) ? ( ((1.0/ogIndexes.size()) * (1.0-ALPHA)) + (ALPHA/length)) : (ALPHA/length));
+					if (ogIndexes.containsKey(mapping.get(j).getUrl())){
+						matrix.get(i).add( ((1.0/ogIndexes.size()) * (1.0-ALPHA)) + (ALPHA/length));
+					}else{
+						matrix.get(i).add((ALPHA/length));
+					}
 				}
 			}
 		}

@@ -10,7 +10,17 @@ import java.util.List;
 public class SearchData implements ProjectTester {
 
 	public void initialize(){
+		File file = new File("pages");
+		if (file.exists()){
+			Crawler.deleteFolder(file);
+		}
+		file.mkdir();
 
+		file = new File("IDFs");
+		if (file.exists()){
+			Crawler.deleteFolder(file);
+		}
+		file.mkdir();
 	}
 
 	public void crawl(String seedURL){
@@ -106,8 +116,11 @@ public class SearchData implements ProjectTester {
 		return result;
 	}
 
-//	public static void main(String[] args) {
-//		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-//	}
+	public static void main(String[] args) {
+		SearchData tester = new SearchData();
+//		tester.initialize();
+//		tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+		tester.search("peach pear coconut peach apple", false, 10);
+	}
 
 }
