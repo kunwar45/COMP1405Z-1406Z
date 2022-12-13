@@ -38,10 +38,10 @@ public class AppView extends Pane {
 
     linkList = new ListView<String>();
     linkList.relocate(10, 100);
-    linkList.setPrefSize(540,350);
+    linkList.setPrefSize(540,250);
 
     searchButtonPane = new SearchButtonPane();
-    searchButtonPane.relocate(180, 300);
+    searchButtonPane.relocate(180, 180);
     searchButtonPane.setPrefSize(305,30);
 
 

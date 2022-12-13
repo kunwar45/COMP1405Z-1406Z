@@ -14,7 +14,7 @@ public class Search {
 	public Search(String seedURL){
 		tester = new SearchData();
 		tester.initialize();
-//		tester.crawl(seedURL);
+		tester.crawl(seedURL);
 		searchResults = search("peach pear coconut peach apple", false, 10);
 	}
 

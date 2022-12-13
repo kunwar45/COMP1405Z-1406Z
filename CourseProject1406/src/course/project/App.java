@@ -21,12 +21,20 @@ public class App extends Application{
 
     Pane mainPane = new Pane();
     mainPane.getChildren().add(view);
-    Scene scene = new Scene(mainPane, 600, 600);
+    Scene scene = new Scene(mainPane, 600, 450);
     primaryStage.setTitle("Web Crawler"); // Set window title
     primaryStage.setScene(scene);
     primaryStage.show();
 
     view.getSearchButtonPane().getSearchButton().setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent actionEvent) {
+        model.search(view.getSearchField().getText(), view.getRadio1().isSelected(), 10);
+        view.update(model, 0);
+      }
+    });
+
+    view.getRadio1().setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent actionEvent) {
         model.search(view.getSearchField().getText(), view.getRadio1().isSelected(), 10);
