@@ -99,19 +99,16 @@ public class SearchData implements ProjectTester {
 		return 0;
 	}
 
-	public List<SearchResult> search(String query, boolean boost, int X) {
-<<<<<<< HEAD
-		searchResults = Search.search(query, boost,X);
-		return searchResults;
+	public ArrayList<SearchResult> search(String query, boolean boost, int X) {
+		return Search.search(query, boost,X);
 	}
 
-	public List<SearchResult> getSearchResults(){
-		return searchResults;
-=======
-		Search search = new Search();
-		return search.search(query, boost,X);
->>>>>>> fa53e93fae789fb8c72556eb8406fc7de3dbc924
-	}
+//	public List<SearchResult> getSearchResults(){
+//		return searchResults;
+//
+//		Search search = new Search();
+//		return search.search(query, boost,X);
+//	}
 
 	public static String readFile(String path){
 		String result = "";
@@ -130,10 +127,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public static void main(String[] args) {
-		SearchData tester = new SearchData();
-//		tester.initialize();
-//		tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
-		tester.search("peach pear coconut peach apple", false, 10);
+
 	}
 
 }

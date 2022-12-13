@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AppView extends Pane {
 
-  private ListView<SearchResult> linkList;
+  private ListView<String> linkList;
   private SearchButtonPane searchButtonPane;
   private TextField searchField;
   private RadioButton radio1;
@@ -33,15 +33,15 @@ public class AppView extends Pane {
     searchField.relocate(150, 20);
     searchField.setPrefSize(300, 30);
 
-    radio1 = new RadioButton("Yes");
-    radio1.relocate(140, 55);
+    radio1 = new RadioButton("On/Off");
+    radio1.relocate(150, 60);
 
-    linkList = new ListView<SearchResult>();
-    linkList.relocate(10, 40);
-    linkList.setPrefSize(540,150);
+    linkList = new ListView<String>();
+    linkList.relocate(10, 100);
+    linkList.setPrefSize(540,350);
 
     searchButtonPane = new SearchButtonPane();
-    searchButtonPane.relocate(250, 240);
+    searchButtonPane.relocate(180, 300);
     searchButtonPane.setPrefSize(305,30);
 
 
@@ -71,17 +71,16 @@ public class AppView extends Pane {
     return searchButtonPane;
   }
 
-  public void update(SearchData model, int selectedItem){
-    List<SearchResult> list;
-    list = model.getSearchResults();
+  public void update(Search model, int selectedItem){
+    List<SearchResult> results;
+    results = model.getSearchResults();
 
     linkList.getItems().clear();
 
-    for (int i =0; i<list.size();i++){
-      linkList.getItems().add(list.get(i));
+    for (int i =0; i<results.size();i++){
+      linkList.getItems().add(String.format("%2d.  %s        %.3f", i+1, results.get(i).getTitle(), results.get(i).getScore()));
+      //String.format("%0.2d. %s %-30d", i, results.get(i).getTitle(), results.get(i).getScore())
     }
-
     linkList.getSelectionModel().select(selectedItem);
-
   }
 }

@@ -6,12 +6,20 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 public class Search {
-	private final DecimalFormat df = new DecimalFormat("0.000");
+	private static final DecimalFormat df = new DecimalFormat("0.000");
 
-	private ArrayList<SearchResult> searchResults;
+	private static ArrayList<SearchResult> searchResults;
+	private static SearchData tester;
 
-	public List<SearchResult> search(String phrase, boolean boost, int X) {
-		SearchData tester = new SearchData();
+	public Search(String seedURL){
+		tester = new SearchData();
+		tester.initialize();
+//		tester.crawl(seedURL);
+		searchResults = search("peach pear coconut peach apple", false, 10);
+	}
+
+	public static ArrayList<SearchResult> search(String phrase, boolean boost, int X) {
+
 		ArrayList<String> phraseWords = new ArrayList<String>(List.of(phrase.split(" ")));
 		File files = new File("pages");
 		TreeSet<Link> result = new TreeSet<>();
@@ -41,19 +49,17 @@ public class Search {
 		if (result.size() == X + 1) {
 			result.remove(result.last());
 		}
-		ArrayList<SearchResult> searchResults = new ArrayList<>();
+		searchResults = new ArrayList<>();
 		for (Link link : result) {
 			searchResults.add((SearchResult) link);
 		}
 		for (SearchResult searchResult : searchResults) {
 			System.out.println(searchResult.getTitle() + ": " + searchResult.getScore());
 		}
-
 		return searchResults;
-
 	}
 
-	public double cosineSim(ArrayList<Double> a, ArrayList<Double> b) {
+	public static double cosineSim(ArrayList<Double> a, ArrayList<Double> b) {
 		double eNormA = euclideanNorm(a);
 		double eNormB = euclideanNorm(b);
 		if (eNormA == 0 || eNormB == 0) {
@@ -63,7 +69,7 @@ public class Search {
 		return crawler.dotProduct(a, b) / (eNormA * eNormB);
 	}
 
-	public double euclideanNorm(ArrayList<Double> a) {
+	public static double euclideanNorm(ArrayList<Double> a) {
 		double sum = 0;
 		for (int i = 0; i < a.size(); i++) {
 			sum += Math.pow(a.get(i), 2);
@@ -71,7 +77,7 @@ public class Search {
 		return Math.sqrt(sum);
 	}
 
-	public ArrayList<Object> getPhraseVector(ArrayList<String> phraseWords) {
+	public static ArrayList<Object> getPhraseVector(ArrayList<String> phraseWords) {
 		HashMap<String, Integer> phraseUniques = new HashMap<>();
 		HashMap<String, Double> phraseIDFs = new HashMap<>();
 		ArrayList<Double> phraseVector = new ArrayList<>();
@@ -107,7 +113,7 @@ public class Search {
 		return this.searchResults;
 	}
 
-	// public static void main(String[] args) {
-	// search("gang gang", true, 3);
-	// }
+//	 public static void main(String[] args) {
+//	 search("apple", true, 3);
+//	 }
 }
