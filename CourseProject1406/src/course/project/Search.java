@@ -8,8 +8,8 @@ import java.text.DecimalFormat;
 public class Search {
 	private static final DecimalFormat df = new DecimalFormat("0.000");
 
-	private static ArrayList<SearchResult> searchResults;
-	private static SearchData tester;
+	private ArrayList<SearchResult> searchResults;
+	private SearchData tester;
 
 	public Search(String seedURL){
 		tester = new SearchData();
@@ -18,7 +18,11 @@ public class Search {
 		searchResults = search("peach pear coconut peach apple", false, 10);
 	}
 
-	public static ArrayList<SearchResult> search(String phrase, boolean boost, int X) {
+	public Search(){
+
+	}
+
+	public ArrayList<SearchResult> search(String phrase, boolean boost, int X) {
 
 		ArrayList<String> phraseWords = new ArrayList<String>(List.of(phrase.split(" ")));
 		File files = new File("pages");
