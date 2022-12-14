@@ -13,12 +13,13 @@ public class Search {
 
 	public Search(String seedURL){
 		tester = new SearchData();
-		tester.initialize();
-		tester.crawl(seedURL);
-		searchResults = search("peach pear coconut peach apple", false, 10);
+//		tester.initialize();
+//		System.out.println(tester.getIDF("apple"));
+//		tester.crawl(seedURL);
 	}
 
 	public Search(){
+		tester = new SearchData();
 
 	}
 
@@ -117,7 +118,8 @@ public class Search {
 		return this.searchResults;
 	}
 
-//	 public static void main(String[] args) {
-//	 search("apple", true, 3);
-//	 }
+	 public void main(String[] args) {
+		tester.initialize();
+	 	tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+	 }
 }
