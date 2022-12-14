@@ -33,14 +33,6 @@ public class App extends Application{
       }
     });
 
-    view.getRadio1().setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent actionEvent) {
-        model.search(view.getSearchField().getText(), view.getRadio1().isSelected(), 10);
-        view.update(model, 0);
-      }
-    });
-
   }
   
   public static void main(String[] args){
