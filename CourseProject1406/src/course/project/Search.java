@@ -13,9 +13,6 @@ public class Search {
 
 	public Search(String seedURL){
 		tester = new SearchData();
-//		tester.initialize();
-//		System.out.println(tester.getIDF("apple"));
-//		tester.crawl(seedURL);
 	}
 
 	public Search(){
@@ -44,12 +41,11 @@ public class Search {
 			}
 			Link link = new Link(url);
 			link.setTitle(tester.getTitle(url));
-			link.setScore(df.format(sim));
+			link.setScore(Double.parseDouble(df.format(sim)));
 			if (result.size() == X + 1) {
 				result.remove(result.last());
 			}
 			result.add(link);
-			System.out.println(result);
 		}
 		if (result.size() == X + 1) {
 			result.remove(result.last());
@@ -57,9 +53,6 @@ public class Search {
 		searchResults = new ArrayList<>();
 		for (Link link : result) {
 			searchResults.add((SearchResult) link);
-		}
-		for (SearchResult searchResult : searchResults) {
-			System.out.println(searchResult.getTitle() + ": " + searchResult.getScore());
 		}
 		return searchResults;
 	}
@@ -118,8 +111,9 @@ public class Search {
 		return this.searchResults;
 	}
 
-	 public void main(String[] args) {
-		tester.initialize();
-	 	tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
-	 }
+//	 public static void main(String[] args) {
+//		SearchData tester = new SearchData();
+//		tester.initialize();
+//	 	tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+//	 }
 }

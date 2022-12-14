@@ -13,7 +13,7 @@ public class Link implements Comparable<Link>, SearchResult{
     private String title;
     private double pageRank;
     private int wordCount;
-    private String score;
+    private double score;
 
     Link(String url) {
         this.setUrl(url);
@@ -22,7 +22,7 @@ public class Link implements Comparable<Link>, SearchResult{
         countAll = new HashMap<String, Integer>();
         title = "";
         wordCount = 0;
-        score = "";
+        score = 0;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Link implements Comparable<Link>, SearchResult{
     }
 
     public double getScore() {
-        return Double.parseDouble(score);
+        return score;
     }
 
     public void setCountAll(HashMap<String, Integer> countAll) {
@@ -114,7 +114,7 @@ public class Link implements Comparable<Link>, SearchResult{
 
     public void setWordCount(int wordCount) { this.wordCount = wordCount; }
 
-    public void setScore(String score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -127,8 +127,7 @@ public class Link implements Comparable<Link>, SearchResult{
         if (this.url.equals(l.getUrl())){
             return 0;
         }
-        if (this.score.equals(l.score)){
-            System.out.println(this.getTitle() + " -> " + l.getTitle() + " " + this.getTitle().compareTo(l.getTitle()));
+        if (score == l.getScore()){
             return (this.getTitle().compareTo(l.getTitle()));
         }else if (this.getScore() > l.getScore()){
             return -1;

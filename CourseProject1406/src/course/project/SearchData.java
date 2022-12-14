@@ -106,13 +106,6 @@ public class SearchData implements ProjectTester {
 		return searchObj.search(query, boost,X);
 	}
 
-//	public List<SearchResult> getSearchResults(){
-//		return searchResults;
-//
-//		Search search = new Search();
-//		return search.search(query, boost,X);
-//	}
-
 	public static String readFile(String path){
 		String result = "";
 		try {
@@ -127,10 +120,6 @@ public class SearchData implements ProjectTester {
 			System.out.println("Error: Cannot read from file");
 		}
 		return result;
-	}
-
-	public static void main(String[] args) {
-
 	}
 
 }
