@@ -11,6 +11,7 @@ public class Search {
 	private ArrayList<SearchResult> searchResults;
 	private SearchData tester;
 
+
 	public Search(String seedURL){
 		tester = new SearchData();
 //		tester.initialize();
@@ -82,13 +83,13 @@ public class Search {
 		return Math.sqrt(sum);
 	}
 
-	public static ArrayList<Object> getPhraseVector(ArrayList<String> phraseWords) {
+	public ArrayList<Object> getPhraseVector(ArrayList<String> phraseWords) {
 		HashMap<String, Integer> phraseUniques = new HashMap<>();
 		HashMap<String, Double> phraseIDFs = new HashMap<>();
 		ArrayList<Double> phraseVector = new ArrayList<>();
-		ArrayList<Object> result = new ArrayList<>();
+//		ArrayList<Object> result = new ArrayList<>();
 		Crawler crawler = new Crawler();
-		SearchData tester = new SearchData();
+		tester = new SearchData();
 
 		for (int wordIndex = 0; wordIndex < phraseWords.size(); wordIndex++) {
 			String word = phraseWords.get(wordIndex);

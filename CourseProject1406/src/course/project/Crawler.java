@@ -323,6 +323,4 @@ public class Crawler {
 		}
 		return Math.sqrt(sum);
 	}
-
-
 }

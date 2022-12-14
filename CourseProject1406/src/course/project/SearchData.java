@@ -11,7 +11,7 @@ public class SearchData implements ProjectTester {
 
 	private List<SearchResult> searchResults;
 	private Crawler crawler;
-	private Search searchObj
+	private Search searchObj;
 
 	public void initialize(){
 		File file = new File("pages");
