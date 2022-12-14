@@ -16,7 +16,6 @@ public class App extends Application{
     model = new Search("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
 
     AppView view = new AppView("Web Crawler");
-//    view.update(model, 0);
     view.relocate(10,10);
 
     Pane mainPane = new Pane();

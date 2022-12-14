@@ -18,11 +18,9 @@ public class Crawler {
 
 		int count = 1;
 		while (true) {
-//			System.out.println(queue);
 			parse(url);
 
 			for (Link outgoingLink: url.getOutgoingLinks()) {
-//				System.out.println(outgoingLink);
 				if (!queue.contains(outgoingLink) && data.get(outgoingLink.getUrl()).getOutgoingLinks()==null ) {
 					queue.addend(outgoingLink);
 				}
@@ -60,7 +58,6 @@ public class Crawler {
 		String parsed = "";
 		try {
 			parsed = WebRequester.readURL(url.getUrl());
-//			System.out.println(parsed);
 		}catch(MalformedURLException e){
 			e.printStackTrace();
 		}catch(IOException e){
@@ -68,11 +65,8 @@ public class Crawler {
 		}
 
 		String[] parsedArr = parsed.split("\n");
-//		System.out.println(parsed);
-//		System.out.println("The length of tedaf " + parsedArr.length);
 
 		for (String s : parsedArr){
-//			System.out.println(s);
 			if (s.contains("title")){
 
 				url.setTitle(s.substring(s.indexOf("<title>") + 7, s.indexOf("</title>")));
@@ -83,17 +77,11 @@ public class Crawler {
 				} else {
 
 					outgoingLink = new Link(url.getRelativeLink()+s.substring((s.indexOf("./") + 1), s.indexOf(">")-1));
-//					System.out.println(outgoingLink.getUrl());
 				}
 				url.addOutgoingLink(outgoingLink);
 				data.putIfAbsent(outgoingLink.getUrl(), outgoingLink);
 				data.get(outgoingLink.getUrl()).addIncomingLink(url);
-//
-//				System.out.println(outgoingLink);
-//				for (Link l: data.get(outgoingLink.getUrl()).getIncomingLinks()) {
-//					System.out.println(l);
-//				}
-//				System.out.println();
+
 			} else if ((s.contains(">") && (!s.contains("<")))){
 				url.setWordCount(url.getWordCount() + 1);
 
@@ -193,21 +181,6 @@ public class Crawler {
 			} catch (IOException e){
 				System.out.println("" + l.getUrl() + " IOException");
 			}
-//
-//				Scanner in = new Scanner(new FileReader("resources" + File.separator + "myAccount2.txt"));
-//
-//				String name = in.nextLine();
-//				int acc = in.nextInt();
-//				float bal = in.nextFloat();
-//				aBankAccount = new BankAccount(name, bal, acc);
-//
-//				System.out.println(aBankAccount);
-//				in.close();
-//			} catch (FileNotFoundException e) {
-//				System.out.println("Error: Cannot open file for reading");
-//			} catch (NoSuchElementException e) {
-//				System.out.println("Error: EOF encountered, file may be corrupt");
-//			}
 		}
 	}
 

@@ -74,14 +74,10 @@ public class AppView extends Pane {
   public void update(Search model, int selectedItem){
 
     ArrayList<SearchResult> results = model.search(getSearchField().getText(), getRadio1().isSelected(), 10);
-
-    System.out.println(results.size());
-
     linkList.getItems().clear();
 
     for (int i =0; i<results.size();i++){
-      linkList.getItems().add(String.format("%2d.  %s        %.3f", i+1, results.get(i).getTitle(), results.get(i).getScore()));
-      //String.format("%0.2d. %s %-30d", i, results.get(i).getTitle(), results.get(i).getScore())
+      linkList.getItems().add(String.format("%2d. %-60s %.3f", i+1, results.get(i).getTitle(), results.get(i).getScore()));
     }
     linkList.getSelectionModel().select(selectedItem);
   }
