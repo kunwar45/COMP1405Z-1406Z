@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Crawler {
+	private final double ALPHA = 0.1;
+	private final double DISTANCE_THRESHOLD = 0.0001;
 	private HashMap<String,Link> data = new HashMap<>();
 	private HashMap<String, Double> IDFs = new HashMap<>();
+	private ImprovedQueue queue;
+
 	public int crawl(String seed){
-		ImprovedQueue queue = new ImprovedQueue(new Link(seed));
+		queue = new ImprovedQueue(new Link(seed));
 		Link url = queue.removestart();
 
 		int count = 1;
@@ -259,8 +263,7 @@ public class Crawler {
 	}
 
 	public ArrayList<Object> createPageRanks(){
-		double ALPHA = 0.1;
-		double DISTANCE_THRESHOLD = 0.0001;
+
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
 		ArrayList<Link> mapping = new ArrayList<>(data.values());
 //		System.out.println(mapping);
