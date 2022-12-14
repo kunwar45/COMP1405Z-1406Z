@@ -102,7 +102,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public ArrayList<SearchResult> search(String query, boolean boost, int X) {
-		 earchObj = new Search();
+		searchObj = new Search();
 		return searchObj.search(query, boost,X);
 	}
 
