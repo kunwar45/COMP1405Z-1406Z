@@ -72,8 +72,10 @@ public class AppView extends Pane {
   }
 
   public void update(Search model, int selectedItem){
-    List<SearchResult> results;
-    results = model.getSearchResults();
+
+    ArrayList<SearchResult> results = model.search(getSearchField().getText(), getRadio1().isSelected(), 10);
+
+    System.out.println(results.size());
 
     linkList.getItems().clear();
 
