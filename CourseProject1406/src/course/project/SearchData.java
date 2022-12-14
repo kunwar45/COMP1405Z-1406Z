@@ -10,6 +10,8 @@ import java.util.List;
 public class SearchData implements ProjectTester {
 
 	private List<SearchResult> searchResults;
+	private Crawler crawler;
+	private Search searchObj
 
 	public void initialize(){
 		File file = new File("pages");
@@ -26,7 +28,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public void crawl(String seedURL){
-		Crawler crawler = new Crawler();
+		crawler = new Crawler();
 		crawler.crawl(seedURL);
 	}
 
@@ -100,7 +102,7 @@ public class SearchData implements ProjectTester {
 	}
 
 	public ArrayList<SearchResult> search(String query, boolean boost, int X) {
-		Search searchObj = new Search();
+		 earchObj = new Search();
 		return searchObj.search(query, boost,X);
 	}
 
