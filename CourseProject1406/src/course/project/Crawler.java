@@ -11,8 +11,11 @@ public class Crawler {
 	private HashMap<String,Link> data = new HashMap<>();
 	private HashMap<String, Double> IDFs = new HashMap<>();
 	private ImprovedQueue queue;
+	private ArrayList<Double> pageRanks;
+	private ArrayList<Link> mapping;
 
 	public int crawl(String seed){
+		//Creates queue for the urls that will be crawled
 		queue = new ImprovedQueue(new Link(seed));
 		Link url = queue.removestart();
 
@@ -20,17 +23,20 @@ public class Crawler {
 		while (true) {
 			parse(url);
 
+			//Adds URLs to the queue if they have not already been crawled and are not already in the queue
 			for (Link outgoingLink: url.getOutgoingLinks()) {
 				if (!queue.contains(outgoingLink) && data.get(outgoingLink.getUrl()).getOutgoingLinks()==null ) {
 					queue.addend(outgoingLink);
 				}
 			}
 
+			//Generates the IDFs of the words in the urls
 			for (String word: url.getCountAll().keySet()){
 				IDFs.putIfAbsent(word,0.0);
 				IDFs.replace(word,IDFs.get(word)+1);
 			}
 
+			//Breaks the loop if there are no more URLs to crawl
 			if (queue.size() == 0) {
 				break;
 			}
@@ -40,19 +46,19 @@ public class Crawler {
 
 		}
 
-		ArrayList<Object> pageRankResult = createPageRanks();
-		ArrayList<Double> pageRanks = (ArrayList<Double>) pageRankResult.get(0);
-		ArrayList<Link> mapping = (ArrayList<Link>) pageRankResult.get(1);
+		createPageRanks();
 
+		//Uses the mapping to assign the pageRanks to the Link objects
 		for (int i = 0; i < mapping.size(); i++) {
 			mapping.get(i).setPageRank(pageRanks.get(i));
 		}
 
 		createFiles();
-		return count;
+		return count; //Returns the number of links parsed
 	}
 
 	public void parse(Link url){
+		//Puts the link into the data hashmap
 		data.putIfAbsent(url.getUrl(), url);
 		url.setOutgoingLinks(new ArrayList<Link>());
 		String parsed = "";
@@ -100,7 +106,9 @@ public class Crawler {
 		}
 	}
 
+	//Creates all the files from the Link objects
 	public void createFiles(){
+		//For each Link parsed
 		for (Link l: data.values()){
 			String path = l.getUrl().replace("/", "{").replace(":", "}").replace('.','(');
 			File file = new File("pages" + File.separator + path);
@@ -183,7 +191,6 @@ public class Crawler {
 			}
 		}
 	}
-
 	public static void deleteFolder(File file){
 		for (File f : file.listFiles()){
 			if (f.isDirectory()){
@@ -194,7 +201,6 @@ public class Crawler {
 		}
 		file.delete();
 	}
-
 	public double getIdf(String word, Integer totalUrls){
 		double counter;
 		if (IDFs.containsKey(word)){
@@ -227,29 +233,24 @@ public class Crawler {
 		return sum;
 	}
 
-//	public static void main(String[] args) {
-//		Crawler.crawl("http://people.scs.carleton.ca/~davidmckenney/tinyfruits/N-0.html");
-//	}
-
 	public double log2(double lognum){
 		return Math.log(lognum) / Math.log(2);
 	}
 
-	public ArrayList<Object> createPageRanks(){
-
+	public void createPageRanks(){
 		ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
-		ArrayList<Link> mapping = new ArrayList<>(data.values());
-//		System.out.println(mapping);
+		mapping = new ArrayList<>(data.values());
 
 		int length = mapping.size();
 
+		//For each Url
 		for (int i = 0; i < length; i++){
-			matrix.add(new ArrayList<Double>());
+			matrix.add(new ArrayList<Double>()); //Creates a new Arraylist (acts as a row)
+			HashMap<String,Link> ogIndexes = new HashMap<>();
+			for (Link l:data.get(mapping.get(i).getUrl()).getOutgoingLinks()){
+				ogIndexes.put(l.getUrl(), l);
+			}
 			for (int j = 0; j <length; j++){
-				HashMap<String,Link> ogIndexes = new HashMap<>();
-				for (Link l:data.get(mapping.get(i).getUrl()).getOutgoingLinks()){
-					ogIndexes.put(l.getUrl(), l);
-				}
 				if (ogIndexes.size() == 0){
 					matrix.get(i).add( ((1.0/(double)length) * (1.0-ALPHA)) + (ALPHA/(double)length) );
 				}else{
@@ -282,12 +283,7 @@ public class Crawler {
 			euclideanDistance = euclideanDistance(pi,newPi);
 			pi = newPi;
 		}
-
-		ArrayList<Object> result = new ArrayList<>();
-		result.add(pi);
-		result.add(mapping);
-		return result;
-
+		pageRanks = pi;
 	}
 	public double euclideanDistance(ArrayList<Double> a, ArrayList<Double> b){
 		double sum = 0;

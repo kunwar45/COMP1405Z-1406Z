@@ -30,6 +30,9 @@ public class Search {
 		HashMap<String, Integer> phraseUniques = (HashMap<String, Integer>) phraseDetails.get(0);
 		ArrayList<Double> phraseVector = (ArrayList<Double>) phraseDetails.get(1);
 
+
+		//Finds the score of each link and puts it into the TreeSet. The TreeSet only ever has 11 elements, so it will
+		//always compare 10 times maximum regardless of the amount of urls, therefore the TreeSet sorting is O(1)
 		for (File f : files.listFiles()) {
 			String url = f.getName();
 			ArrayList<Double> documentVector = new ArrayList<>();
@@ -112,9 +115,9 @@ public class Search {
 		return this.searchResults;
 	}
 
-//	 public static void main(String[] args) {
-//		SearchData tester = new SearchData();
-//		tester.initialize();
-//	 	tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
-//	 }
+	 public static void main(String[] args) {
+		SearchData tester = new SearchData();
+		tester.initialize();
+	 	tester.crawl("http://people.scs.carleton.ca/~davidmckenney/fruits/N-0.html");
+	 }
 }
